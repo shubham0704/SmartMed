@@ -1,0 +1,74 @@
+<html>
+	<head>
+	<title>YourDashboard</title>
+	<style>
+	#body{
+		background-color:d7d7f4;
+		}
+	#main{
+			margin:5 auto;
+			background-color:#00b3b3;
+			text-align: center;
+			font-family: 'Open Sans', sans-serif;
+			height: 200px;
+	}
+	
+	.table{
+		margin:10 auto;
+		padding-top:10px;
+		padding-left:35px;
+		padding-right:35px;
+		padding-bottom:35px;
+		border:5px 1a1a1a;
+		display:table;
+		font-family: 'Open Sans', sans-serif;
+	}
+	.row{
+		display:table-row;
+		border:5px 1a1a1a;
+	}
+	
+	.cell{
+			max-width: 600px;
+			border:50px solid #d7d7f4;
+			padding:150px;
+			padding-right:350px;
+				
+			display:table-cell;
+			border-collapse: collapse;
+			margin:20 auto;
+			background-color:ffffff;
+		}
+		.shortcell{
+			max-width: 600px;
+			border:10px solid #d7d7f4;
+			padding:10px;
+			text-align:center;
+			display:table-cell;
+			margin:20 auto;
+			background-color:d7d7f4;
+		}
+		.shadow {
+  -moz-box-shadow:    3px 3px 5px 6px #ccc;
+  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+  box-shadow:         3px 3px 5px 6px #ccc;
+}
+	</style>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	</head>
+	<body id="body">
+		<div id="main">
+			<img src="../static/sample-logo.jpg" height="100px" width="100px" style="float:left;padding-left:15px;padding-top:15px;">
+		</div>
+		<div class="table">
+		<div class="row">
+		<div class="shortcell">Manual Control</div>
+		<div class="shortcell">Your Prescription</div>
+		</div>
+		<div class="row">
+		<div class="cell shadow"></div>
+		<div class="cell shadow"></div>
+		</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Led Interface</title>
+    <style>
+        .container{border: 1px solid black;width:500px; height:500px}
+        .innerContainer{border: 1px solid black;}
+
+
+    </style>
+</head>
+<body>
+<button type="button" onclick="closeSocket();" >Close</button>
+    <table class="container">
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin1" name="PIN1" onclick="tellServer('1')"></td>
+            <td><input type="button" value="pin2" name="PIN2" onclick="tellServer('2')"></td>
+        </tr>
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin3" name="PIN3" onclick="tellServer('3')"></td>
+            <td><input type="button" value="pin4" name="PIN4" onclick="tellServer('4')"></td>
+        </tr>
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin5" name="PIN5" onclick="tellServer('5')"></td>
+            <td><input type="button" value="pin6"name="PIN6" onclick="tellServer('6')"></td>
+        </tr>
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin7" name="PIN7" onclick="tellServer('7')"></td>
+            <td><input type="button" value="pin8" name="PIN8" onclick="tellServer('8')"></td>
+        </tr>
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin9" name="PIN9" onclick="tellServer('9')"></td>
+            <td><input type="button" value="pin10" name="PIN10" onclick="tellServer('10')"></td>
+        </tr>
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin11" name="PIN11" onclick="tellServer('11')"></td>
+            <td><input type="button" value="pin12" name="PIN12" onclick="tellServer('12')"></td>
+        </tr>
+        <tr class="innerContainer" >
+            <td><input type="button" value="pin13" name="PIN13" onclick="tellServer('13')"></td>
+            <td><input type="button" value="pin14" name="PIN14" onclick="tellServer('14')"></td>
+        </tr>
+    </table>
+<div id="messages"></div>
+<script>
+    var webSocket;
+    var messages = document.getElementById("messages");
+    function openSocket(){
+        // Ensures only one connection is open at a time
+        if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
+            writeResponse("WebSocket is already opened.");
+            return;
+        }
+        // Create a new instance of the websocket
+        webSocket = new WebSocket("ws://localhost:5000/echo");
+
+        /**
+         * Binds functions to the listeners for the websocket.
+         */
+        webSocket.onopen = function(event){
+
+            if(event.data === undefined)
+                return;
+
+            writeResponse(event.data);
+        };
+
+        webSocket.onmessage = function(event){
+            writeResponse(event.data);
+        };
+
+        webSocket.onclose = function(event){
+            writeResponse("Connection closed");
+        };
+    }
+    window.onload=openSocket();
+    function tellServer(number){
+        var text=number;
+        webSocket.send(text);
+
+    }
+    function closeSocket(){
+        webSocket.close();
+    }
+    function writeResponse(text){
+        messages.innerHTML += "<br/>" + text;
+    }
+</script>
+</body>
+</html>
