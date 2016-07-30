@@ -1,0 +1,22 @@
+<html>
+<head>
+	<title>Search Results</title>
+</head>
+<body>
+<p>
+		<h4>Displaying Search Results:</h4>
+{%if not(userlist)%}
+	<li>{{"No results found"}}</li>
+			
+
+{%else%}
+</p>
+<p>
+<h5>According to Username:</h5>		
+{%for user in userlist%}
+<a href="/profile/{{(user[0])}}">{{str(user[0])}}</a>
+{%end%}
+</p>
+{%end%}
+</body>
+</html>

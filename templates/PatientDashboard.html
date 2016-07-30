@@ -1,0 +1,178 @@
+<html>
+	<head>
+	<title>YourDashboard</title>
+	<style>
+		 
+	#body{
+		background-color:d7d7f4;
+		}
+	#main{
+			margin:0 auto;
+			background-color:#00b3b3;
+			text-align: center;
+			font-family: 'Open Sans', sans-serif;
+			height: 200px;
+	}
+	
+	.table{
+		margin:10 auto;
+		padding-top:10px;
+		padding-left:35px;
+		padding-right:35px;
+		padding-bottom:35px;
+		border:5px 1a1a1a;
+		display:table;
+		font-family: 'Open Sans', sans-serif;
+	}
+	.row{
+		display:table-row;
+		border:5px 1a1a1a;
+	}
+	
+	.cell{
+			min-width: 10px;
+			max-width:40%;
+			border:50px solid #d7d7f4;
+			padding:150px;
+			padding-right:300px;
+				
+			display:table-cell;
+			border-collapse: collapse;
+			margin:10 auto;
+			background-color:ffffff;
+			
+		}
+		.shortcell{
+			max-width: 40%;
+			border:10px solid #d7d7f4;
+			padding:10px;
+			text-align:center;
+			display:table-cell;
+			margin:20 auto;
+			background-color:d7d7f4;
+		}
+		.table1{display:table;}
+		.row1{display:table-row;}
+		.cell1{display:table-cell;}
+		.shadow {
+  -moz-box-shadow:    3px 3px 5px 6px #ccc;
+  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+  box-shadow:         3px 3px 5px 6px #ccc;
+}
+.button {
+    background-color: #CFD8DC; 
+    border: none;
+    color: black;
+    width: 90px;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    border: 1px solid #b0bec5;
+}
+.button:hover {
+    background-color: #80deea; 
+    color: white;
+}
+	</style>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	</head>
+	<body id="body">
+		<div id="main">
+			<img src="../static/sample-logo.jpg" height="100px" width="100px" style="float:left;padding-left:15px;padding-top:15px;">
+				Welcome, {{result['userInfo']['username']}}
+		</div>
+		<div>
+		<form action="/search" method="post">
+                 <input type="text" class=" search " name="query" placeholder="Search for doctors">
+               </form>
+        </div>       
+		<div class="table">
+		<div class="row">
+		<div class="shortcell">Manual Control</div>
+		<div class="shortcell">Your Prescription</div>
+		</div>
+		<div class="row">
+		<div class="cell shadow">
+			<div id="messages"></div>
+		<div class="container table1">
+        <div class="innerContainer row1" >
+            <div class="cell1"><input  class="button" type="button" value="pin1" name="PIN1" onclick="tellServer('1')"></div>
+            <div class="cell1"><input class="button" type="button" value="pin2" name="PIN2" onclick="tellServer('2')"></div>
+        </div>
+        <div class="innerContainer row1" >
+            <div class="cell1"><input class="button" type="button" value="pin3" name="PIN3" onclick="tellServer('3')"></div>
+            <div class="cell1"><input class="button" type="button" value="pin4" name="PIN4" onclick="tellServer('4')"></div>
+        </div>
+        <div class="innerContainer row1">
+            <div class="cell1"><input type="button" class="button" value="pin5" name="PIN5" onclick="tellServer('5')"></div>
+            <div class="cell1"><input type="button" class="button" value="pin6"name="PIN6" onclick="tellServer('6')"></div>
+        </div>
+        <div class="innerContainer row1" >
+            <div class="cell1"><input type="button" class="button" value="pin7" name="PIN7" onclick="tellServer('7')"></div>
+            <div class="cell1"><input type="button" class="button" value="pin8" name="PIN8" onclick="tellServer('8')"></div>
+        </div>
+        <div class="innerContainer row1" >
+            <div class="cell1"><input type="button" class="button" value="pin9" name="PIN9" onclick="tellServer('9')"></div>
+            <div class="cell1"><input type="button" class="button" value="pin10" name="PIN10" onclick="tellServer('10')"></div>
+        </div>
+        <div class="innerContainer row1" >
+            <div class="cell1"><input type="button" class="button" value="pin11" name="PIN11" onclick="tellServer('11')"></div>
+            <div class="cell1"><input type="button" class="button" value="pin12" name="PIN12" onclick="tellServer('12')"></div>
+        </div>
+        <div class="innerContainer row1" >
+            <div class="cell1"><input type="button" class="button" value="pin13" name="PIN13" onclick="tellServer('13')"></div>
+            <div class="cell1"><input type="button" class="button" value="pin14" name="PIN14" onclick="tellServer('14')"></div>
+        </div>
+    </div>
+		</div>
+		<div class="cell shadow"></div>
+		</div>
+		</div>
+		<script>
+    var webSocket;
+    var messages = document.getElementById("messages");
+    function openSocket(){
+        // Ensures only one connection is open at a time
+        if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
+            writeResponse("WebSocket is already opened.");
+            return;
+        }
+        // Create a new instance of the websocket
+        webSocket = new WebSocket("ws://localhost:5000/echo");
+
+        /**
+         * Binds functions to the listeners for the websocket.
+         */
+        webSocket.onopen = function(event){
+
+            if(event.data === undefined)
+                return;
+
+            writeResponse(event.data);
+        };
+
+        webSocket.onmessage = function(event){
+            writeResponse(event.data);
+        };
+
+        webSocket.onclose = function(event){
+            writeResponse("Connection closed");
+        };
+    }
+    window.onload=openSocket();
+    function tellServer(number){
+        var text=number;
+        webSocket.send(text);
+
+    }
+    function closeSocket(){
+        webSocket.close();
+    }
+    function writeResponse(text){
+        messages.innerHTML += "<br/>" + text;
+    }
+</script>
+	</body>
+</html>
