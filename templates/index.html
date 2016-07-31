@@ -7,12 +7,20 @@
 
 		<!-- CSS  -->
 		<link href="../static/bower_components/materialize/dist/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-		<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+		<link rel="stylesheet" type="text/css" href="../static/bower_components/font-awesome/css/font-awesome.min.css">
+		<link href="../static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+		<link rel="stylesheet" type="text/css" href="../static/css/animate.css">
+		<script type="text/javascript" src="../static/bower_components/wow/dist/wow.min.js"></script>
+		<script>
+		new WOW().init();
+		</script>
 	</head>
 	<body>
-		<nav class="light-blue lighten-1" role="navigation">
+<div class="navbar-fixed">
+		<nav class="custom-transparent" role="navigation">
 			<div class="container">
-				<div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo">SmartMed</a>
+				<div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo"><i class="fa fa-heartbeat"></i></a>
 					<ul class="right">
 						<li><a href="#">Contact</a></li>
 						<li><a class="waves-effect waves-light btn modal-trigger orange" href="#sign">Login/Signup</a></li>
@@ -25,9 +33,11 @@
 				</div>
 			</div>
 		</nav>
+		</div>
+
 	<div class="section no-pad-bot" id="index-banner">
-		<div class="container">
-			<br><br>
+		
+			<br><br><br><br><br>
 			<h1 class="header center orange-text">Need to take care of patients?</h1>
 			<div class="row center">
 				<h5 class="header col s12 light">A automated IOT enabled medicine environment</h5>
@@ -37,7 +47,7 @@
 			</div>
 			<br><br>
 
-		</div>
+		
 	</div>
 
 	<div class="container">
@@ -45,47 +55,53 @@
 
 			<!--   Icon Section   -->
 			<div class="row">
-				<div class="col s12 m4">
-					<div class="icon-block">
-						<h2 class="center light-blue-text"><i class="mdi-image-flash-on"></i></h2>
-						<h5 class="center">The power of IoT</h5>
+				<div class="row">
+				<div class="col m6 wow slideInLeft center"><i class="fa fa-globe home-fa"></i></div>
+				<div class="col s12 m6 wow slideInRight">
+									<div class="icon-block">
+										<h2 class="center light-blue-text"><i class="mdi-image-flash-on"></i></h2>
+										<h5 class="center">The power of IoT</h5>
+				
+										<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+										tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+										quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+										consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+										cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+										proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+									</div>
+								</div></div>
 
-						<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-					</div>
-				</div>
+				<div class="row"><div class="col s12 m6 wow slideInRight">
+									<div class="icon-block">
+										<h2 class="center light-blue-text"><i class="mdi-social-group"></i></h2>
+										<h5 class="center">Focus on patients</h5>
+				
+										<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+										tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+										quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+										consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+										cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+										proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+									</div>
+								</div>
+								<div class="col s12 m6 center wow slideInLeft"><i class="fa fa-male home-fa"></i></div>
+								</div>
 
-				<div class="col s12 m4">
-					<div class="icon-block">
-						<h2 class="center light-blue-text"><i class="mdi-social-group"></i></h2>
-						<h5 class="center">Focus on patients</h5>
-
-						<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-					</div>
-				</div>
-
-				<div class="col s12 m4">
-					<div class="icon-block">
-						<h2 class="center light-blue-text"><i class="mdi-action-settings"></i></h2>
-						<h5 class="center">Easy to implement</h5>
-
-						<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-					</div>
-				</div>
+				<div class="row">
+				<div class="col s12 m6 wow bounceInRight center"><i class="fa fa-universal-access home-fa"></i></div>
+				<div class="col s12 m6 wow bounceInLeft">
+									<div class="icon-block">
+										<h2 class="center light-blue-text"><i class="mdi-action-settings"></i></h2>
+										<h5 class="center">Easy to implement</h5>
+				
+										<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+										tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+										quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+										consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+										cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+										proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+									</div>
+								</div></div>
 			</div>
 
 		</div>
@@ -155,6 +171,15 @@
 			$(document).ready(function(){
     			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     			$('.modal-trigger').leanModal();
+
+    			$(window).bind('scroll',function(){
+    				if($(window).scrollTop()>700){
+    					$('nav').addClass('blue transition');
+    				}
+    				else{
+    					$('nav').removeClass('blue');
+    				}
+    			});
   			});
           
 		</script>
