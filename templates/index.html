@@ -15,6 +15,7 @@
 				<div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo">SmartMed</a>
 					<ul class="right">
 						<li><a href="#">Contact</a></li>
+						<li><a class="waves-effect waves-light btn modal-trigger orange" href="#sign">Login/Signup</a></li>
 					</ul>
 
 					<ul id="nav-mobile" class="side-nav">
@@ -135,13 +136,27 @@
 				</div>
 			</div>
 		</footer>
-
-
+		
+		<!-- Modal Structure -->
+		<div id="sign" class="modal">
+			<div class="modal-content">
+				<h4>Log In/ Sign Up</h4>
+				<p>A bunch of text</p>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Agree</a>
+			</div>
+		</div>
 		<!--  Scripts-->
 		<script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
 		<script src="../static/bower_components/materialize/dist/js/materialize.min.js"></script>
-		<script src="js/init.js"></script>
-
+		<!-- <script src="js/init.js"></script> -->
+		<script type="text/javascript">
+			$(document).ready(function(){
+    			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    			$('.modal-trigger').leanModal();
+  			});
+          
+		</script>
 	</body>
 </html>
-					

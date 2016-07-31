@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--Import materialize.css-->
+		<link href="../static/bower_components/materialize/dist/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+		<link rel="stylesheet" type="text/css" href="../static/css/style.css">
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+		<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+		<title>Doctor Dashboard</title>
+	</head>
+
+	<body>
+		<nav class="light-blue lighten-1" role="navigation">
+			<div class="container">
+				<div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo">SmartMed</a>
+					<ul class="right">
+						<li><a href="#">Contact</a></li>
+						<li><a class="waves-effect waves-light btn modal-trigger orange" href="#sign">Login/Signup</a></li>
+					</ul>
+					<ul id="nav-mobile" class="side-nav">
+						<li><a href="#">Contact</a></li>
+					</ul>
+					<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+				</div>
+			</div>
+			</nav>
+
+			<br><br><br>
+
+			<div class="container">
+				<div class="row">
+					<div class="col m8">
+						<div class="card">
+							<div class="card-content">
+								<div class="card-title">
+								Patient Overview
+								</div>
+								<div class="row">
+								<div class="col s6 stat"><div class="custom-no">12</div> Medicines suggested</div><div class="col s6 stat"><div class="custom-no">2</div> Misses</div>
+								<div class="col s6 stat"><div class="custom-no">3</div> Days till course completion</div><div class="col s6 stat"><div class="custom-no">2</div>Sessions held</div>
+								</div>
+
+								<div class="row">
+									<div class="col s6"><button type="button" class="waves-effect waves btn orange col s12"><i class="mdi-content-add"></i>Prescribe</button></div>
+									<div class="col s6"><button type="button" class="waves-effect waves btn orange col s12"><i class="mdi-content-add"></i>Preview Previous Prescription</button></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col m4">
+						<div class="card"> 
+							<div class="card-image"><img src="../static/images/18.jpg"><div class="card-title custom-card-title">Himani Sharma</div></div>
+							<div class="card-content">
+								<u><b>Diseases</b></u><br>
+								<p>
+									Migraine
+								</p>
+								<u><b>Symptoms</b></u>
+								<p>
+									Heavy Headache<br>
+									Eye Pain
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		<!--Import jQuery before materialize.js-->
+		<script type="text/javascript" src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="../static/bower_components/materialize/dist/js/materialize.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+    			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    			$('.modal-trigger').leanModal();
+  			});
+          
+		</script>
+	</body>
+</html>

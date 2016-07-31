@@ -1,0 +1,36 @@
+*{
+	font-family: 'Arimo', sans-serif;
+
+}
+
+.custom-card-title{
+	background: rgba(0,0,0,0.5); width: 100%;
+}
+
+.custom-fix{
+	position: fixed;
+}
+
+.certificates{
+	margin: 10px;
+}
+
+.custom-badge{
+	border-radius: 50px; border: 2px #2196F3 solid; padding: 1px 10px 1px 10px; margin-right: 2px; margin-left: 0;  color: #2196F3;
+}
+
+.stat{
+	border: 1px solid #e0e0e0;
+}
+
+.custom-no{
+	font-size: 36px; font-weight: bold;
+}
+
+.card-image{
+	height: 250px; overflow-y: hidden;
+}
+
+.card-image img{
+
+}
