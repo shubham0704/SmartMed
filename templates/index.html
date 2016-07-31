@@ -1,71 +1,147 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
-		<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
-		
-		<title>AutoMed</title>
-		<style>
-		.showHide{
-			display:none;
-			}
-		</style>
-		 <script src="../static/js/jquery.min.js"></script>
-			<script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
-			
-		</head>
-		<body>
-		
-		
-		
-			<nav class="navbar navbar-inverse">
-				<div class="container-fluid">
-					<!--Logo-->
-					<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavBar">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-						</button>
-					<a href="#" class="navbar-brand">SmartMED</a>
-					</div>	
-			<!--Menu Items-->
-					<div class="collapse navbar-collapse" id="mainNavBar">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#">About</a></li>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+		<title>SmartMed - IoT enabled Lorem Ipsum</title>
+
+		<!-- CSS  -->
+		<link href="../static/bower_components/materialize/dist/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+		<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	</head>
+	<body>
+		<nav class="light-blue lighten-1" role="navigation">
+			<div class="container">
+				<div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo">SmartMed</a>
+					<ul class="right">
 						<li><a href="#">Contact</a></li>
-					
 					</ul>
-					
+
+					<ul id="nav-mobile" class="side-nav">
+						<li><a href="#">Contact</a></li>
+					</ul>
+					<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+				</div>
+			</div>
+		</nav>
+	<div class="section no-pad-bot" id="index-banner">
+		<div class="container">
+			<br><br>
+			<h1 class="header center orange-text">Need to take care of patients?</h1>
+			<div class="row center">
+				<h5 class="header col s12 light">A automated IOT enabled medicine environment</h5>
+			</div>
+			<div class="row center">
+				<a href="http://rahulakrishna.github.io" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+			</div>
+			<br><br>
+
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="section">
+
+			<!--   Icon Section   -->
+			<div class="row">
+				<div class="col s12 m4">
+					<div class="icon-block">
+						<h2 class="center light-blue-text"><i class="mdi-image-flash-on"></i></h2>
+						<h5 class="center">The power of IoT</h5>
+
+						<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 					</div>
 				</div>
-			</nav>
-		
-		
-		
-		
-		
-		<div class="container">
-		<a href=""  class="signin">Sign In</a>
-			<div class="form">        
-				<form action="/login" method="post">
-				<input type="text"  name="username" placeholder="username"/></br>
-				<input type="text" name="password" placeholder="password"/></br>
-				<input type="submit"  name="submit" value="Sign in"/>
-				</form>
+
+				<div class="col s12 m4">
+					<div class="icon-block">
+						<h2 class="center light-blue-text"><i class="mdi-social-group"></i></h2>
+						<h5 class="center">Focus on patients</h5>
+
+						<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					</div>
+				</div>
+
+				<div class="col s12 m4">
+					<div class="icon-block">
+						<h2 class="center light-blue-text"><i class="mdi-action-settings"></i></h2>
+						<h5 class="center">Easy to implement</h5>
+
+						<p class="light">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					</div>
+				</div>
 			</div>
-		<a href=""  class="signup"  onclick="">Sign up</a>
-			<div class="form">        
-				<form action="/signup" method="post">
-					<input type="text"  name="username_signup" placeholder="username"/></br>
-				<input type="text" name="password_signup" placeholder="password"/></br>
-				<input type="text" name="name" placeholder="name"/></br>
-				<input type="text" name="designation" placeholder="Doctor/Patient"/></br>
-				<input type="text" name="emailID" placeholder="emailID"/></br>
-				<input type="submit"  name="submit" value="Sign up"/></br>	
-				</form>
+
+		</div>
+		<br><br>
+
+			<div class="section">
+
 			</div>
-			
-			</div>	
-		</body>
-	
-	</html>
+		</div>
+
+		<footer class="page-footer orange">
+			<div class="container">
+				<div class="row">
+					<div class="col l6 s12">
+						<h5 class="white-text">Smartmed</h5>
+						<p class="grey-text text-lighten-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+
+					</div>
+					<div class="col l3 s12">
+						<h5 class="white-text">Settings</h5>
+						<ul>
+							<li><a class="white-text" href="#!">Privacy</a></li>
+							<li><a class="white-text" href="#!">Terms & Conditions</a></li>
+							<li><a class="white-text" href="#!">Service Policy</a></li>
+							<li><a class="white-text" href="#!">Media Kit</a></li>
+						</ul>
+					</div>
+					<div class="col l3 s12">
+						<h5 class="white-text">Connect</h5>
+						<ul>
+							<li><a class="white-text" href="#!">Facebook</a></li>
+							<li><a class="white-text" href="#!">Twitter</a></li>
+							<li><a class="white-text" href="#!">Linkedin</a></li>
+							<li><a class="white-text" href="#!">Plus</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="footer-copyright">
+				<div class="container">
+					&#169; Rahul Krishna
+				</div>
+			</div>
+		</footer>
+
+
+		<!--  Scripts-->
+		<script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="../static/bower_components/materialize/dist/js/materialize.min.js"></script>
+		<script src="js/init.js"></script>
+
+	</body>
+</html>
+					

@@ -1,0 +1,17 @@
+{
+  "name": "SmartMed",
+  "homepage": "https://github.com/shubham0704/SmartMed",
+  "authors": [
+    "Rahul Krishna <rkbalu524@gmail.com>"
+  ],
+  "description": "IoT enabled applications that helps patients take medicine in time",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
