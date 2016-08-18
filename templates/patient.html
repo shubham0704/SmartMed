@@ -6,8 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="../static/css/style.css">
 		<link rel="stylesheet" type="text/css" href="../static/bower_components/font-awesome/css/font-awesome.min.css">
 		<!--Let browser know website is optimized for mobile-->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
+		
 		<!-- <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet"> -->
 		<title>Doctor Dashboard</title>
 	</head>
@@ -57,7 +56,7 @@
 					</div>
 					<div class="col m4">
 						<div class="card"> 
-							<div class="card-image"><img src="../static/images/18.jpg"><div class="card-title custom-card-title">Himani Sharma</div></div>
+							<div class="card-image"><img src="../static/images/18.jpg"><div class="card-title custom-card-title">{{patInfo['username']}}</div></div>
 							<div class="card-content">
 								<u><b>Diseases</b></u><br>
 								<p>
@@ -105,10 +104,72 @@
 			<div id="prescribe" class="modal">
 				<div class="modal-content">
 					<h4>Prescribe</h4>
-					<textarea></textarea>
+					<!--<textarea></textarea>-->
+					<div class="container">
+					<form method="post" action="/prescribe?obId={{patInfo['_id']}}">
+						<div class="row">
+						<p class="range-field">
+						<label for="test5">Course Duration</label>
+						<input type="range" name="duration" id="test5" min="0" max="40" />
+						</p>
+						</div>
+				<div id="med">
+				<div id="updateMed">
+					  <div class="row">
+						  <div class="col s5">
+						  <input type="text" name="med_0" placeholder="Name of the medicine"/>
+						  </div>
+						  <div class="col s4">
+						   <input name="group_0" type="radio" id="test1" />
+						  <label for="test1">Before Food</label>
+						  </div>
+						  <div class="col s3">
+						   <input name="group_0" type="radio" id="test1" />
+						  <label for="test1">After Food</label>
+						  </div>
+						  </div>
+					  <div class="row">
+					  <div class="col s4">
+					  <label>Morning</label>
+					  <select class="browser-default" name="Morning">
+						<option value="" disabled selected>No. of tablets</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					  </select>
+					  </div>  
+					  <div class="col s4">
+					  <label>Afternoon</label>
+					  <select class="browser-default" name="Afternoon">
+						<option value="" disabled selected>No. of tablets</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					  </select>
+					  </div>  
+					  <div class="col s4">
+					  <label>Evening</label>
+					  <select class="browser-default" name="Evening">
+						<option value="" disabled selected>No. of tablets</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					  </select>
+					  </div>
+					  </div>
+					  </div>
+					  </div> 
+					  <input type="button" value="Add another Medicine" onclick="addChild()"> 
+					  <input type="submit" value="submit"/>
+					  </form>
+							
+					</div>
 				</div>
 				<div class="modal-footer">
-					<a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Prescribe</a>
+					<a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">End</a>
 				</div>
 			</div>
 
@@ -162,6 +223,43 @@
     			$('.modal-trigger').leanModal();
   			});
           
+		</script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<script>
+		var i=0;
+		var increment=function(){
+			i+=1;
+			
+			}	
+		
+		var	addChild=function(){
+		increment();
+		if(i>5){
+			return;
+			}
+		var the_node=document.getElementById("updateMed");
+		//console.log("children are:\n");
+		//console.log(the_node.childNodes[1].childNodes[1].childNodes[1]);
+		//the_node.childNodes[1].childNodes[1].childNodes[1].setAttribute("name","med_"+i);
+		//var radiobuttons=document.getElementsByName("group_"+(i-1));
+		//var array=[...radiobuttons];
+		//radiobuttons[1].name="group_"+i;
+		//for(j=0;i<array.length;j++){
+		//	array[j].setAttribute("name","group_"+i);
+		//	console.log(array[j]);
+			//var item=radiobuttons[j];
+			//item.setAttribute("name","group_"+i);
+			//console.log("item_"+j);
+			//console.log(item);
+		//	}
+		//radiobuttons[0].setAttribute("name","group_"+i);
+		//radiobuttons[1].setAttribute("name","group_"+i);
+		var the_clone=the_node.cloneNode(true);
+		document.getElementById("med").appendChild(the_clone);
+	}
+	
+	
+		
 		</script>
 	</body>
 </html>

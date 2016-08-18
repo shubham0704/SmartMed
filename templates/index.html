@@ -148,7 +148,7 @@
 			</div>
 			<div class="footer-copyright">
 				<div class="container">
-					&#169; Rahul Krishna
+					&#169; Rahul Krishna,shubham0704
 				</div>
 			</div>
 		</footer>
@@ -157,10 +157,30 @@
 		<div id="sign" class="modal">
 			<div class="modal-content">
 				<h4>Log In/ Sign Up</h4>
-				<p>A bunch of text</p>
+				<!--<p>A bunch of text</p>-->
+                <a href=""  class="signin">Sign In</a>
+			<div class="form">
+				<form action="/login" method="post">
+				<input type="text"  name="username" placeholder="username"/></br>
+				<input type="password" name="password" placeholder="password"/></br>
+				<input type="submit"  name="submit" value="Sign in"/>
+				</form>
+			</div>
+		<a href=""  class="signup"  onclick="">Sign up</a>
+			<div class="form">
+				<form action="/signup" method="post">
+					<input type="text"  name="username_signup" placeholder="username"/></br>
+				<input type="password" name="password_signup" placeholder="password"/></br>
+				<input type="text" name="name" placeholder="name"/></br>
+				<input type="text" name="designation" placeholder="Doctor/Patient"/></br>
+				<input type="text" name="emailID" placeholder="emailID"/></br>
+                    <input type="text" name="contact" placeholder="contact"/></br>
+				<input type="submit"  name="submit" value="Sign up"/></br>
+				</form>
+			</div>
 			</div>
 			<div class="modal-footer">
-				<a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Agree</a>
+				<a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Back</a>
 			</div>
 		</div>
 		<!--  Scripts-->

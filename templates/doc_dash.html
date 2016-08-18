@@ -34,8 +34,9 @@
 				<div class="row">
 					<div class="col m4">
 						<div class="card"> 
-							<div class="card-image"><img src="../static/images/neha.jpg"><div class="card-title custom-card-title"><i class="fa fa-stethoscope"></i> Neha Nair</div></div>
-							<div class="card-content">
+							<div class="card-image"><img src="../static/images/neha.jpg"><div class="card-title custom-card-title"><i class="fa fa-stethoscope"></i> {{ result['userInfo']['username'] }}</div></div>
+
+                            <div class="card-content">
 								<i class="fa fa-certificate"></i> <u><b>Certifications</b></u><br>
 								<div class="certificates">
 									<span class="custom-badge">M.B.B.S</span> <span class="custom-badge">M.D</span> <span class="custom-badge">Ph.D</span> <span class="custom-badge">B.A</span><span class="custom-badge">M.A.D.S</span><span class="custom-badge">Anasthaesia</span>
@@ -52,16 +53,22 @@
 					<div class="col m8">
 						<div class="card">
 							<div class="card-content">
-								<div class="card-title">Good day Neha, Here is the list of your patients.</div>
+								<div class="card-title">Good day {{ result['userInfo']['username'] }}, Here is the list of your patients.</div>
 								<ul class="collection">
-								 	<li class="collection-item avatar">
+								 	{% if not validppl %}
+                                    <p class="grey-text text-lighten-1">No patients for now </p>
+                                    {% else %}
+                                    {% for  user in validppl%}
+                                    <li class="collection-item avatar">
 								 		<img src="../static/images/17.jpg" alt="" class="circle">
-								 		<span class="title">Shaan Rahman</span>
+								 		<!--<span class="title">Shaan Rahman</span>
 								 		<p>Diagnosed with Common Flu<br>
 								 			Suggested Dolo 650
-								 		</p>
-								 		<a href="#!" class="secondary-content"><i class="mdi-action-grade"></i>Click to View patient</a>
+								 		</p>-->
+                                        <span class="title">{{user['Service'][2]['sentby']}}</span>
+								 		<a href="/patient?obId={{user['aliases'][0]['fromid']}}" class="secondary-content"><i class="mdi-action-grade"></i>Click to View patient</a>
 								 	</li>
+                                    {%end%}
 								 	<li class="collection-item avatar">
 								 		<img src="../static/images/18.jpg" alt="" class="circle">
 								 		<span class="title">Himani Sharma</span>
@@ -70,10 +77,17 @@
 								 		</p>
 								 		<a href="patient.html" class="secondary-content"><i class="mdi-action-grade"></i>Click to view Patient</a>
 								 	</li>
+                                    {% end %}
 								 </ul> 
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="row">
+				    <div class="offset-s8 col s4">
+				    <a href="/acceptService" class="waves-effect waves-light btn">Requested Services</a>
+				    </div>
+				
 				</div>
 			</div>
 
@@ -113,7 +127,7 @@
 			</div>
 			<div class="footer-copyright">
 				<div class="container">
-					&#169; Rahul Krishna
+					&#169; Rahul Krishna,shubham0704
 				</div>
 			</div>
 		</footer>

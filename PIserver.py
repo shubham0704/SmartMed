@@ -19,7 +19,7 @@ import hashlib
 from bson.objectid import ObjectId
 import re
 import pymongo
-from utilityFunctions import hashingPassword
+from utilityFunctions import hashingPassword,setUserInfo,sendMessage
 import textwrap
 import random
 from datetime import datetime
@@ -29,12 +29,11 @@ from PIL import Image
 import logging
 
 db=MotorClient().med
-
 class IndexHandler(RequestHandler):
-	@removeslash
-	@coroutine
-	def get(self):
-		self.render('index.html')
+    @removeslash
+    @coroutine
+    def get(self):
+        self.render('index.html')
 
 class SignupHandler(RequestHandler):
 
@@ -46,10 +45,11 @@ class SignupHandler(RequestHandler):
         name = self.get_argument('name')
         desig=self.get_argument('designation')
         email = self.get_argument('emailID')
+        contact=self.get_argument('contact')
         if not(bool(username) and bool(password) and bool(name) and bool(re.search(r".+@\w+\.(com|co\.in)",email))):
             self.redirect('/?username&email=empty')
             return
-
+        desig=desig.lower()
         result = yield db.users.find_one({'username':username, 'email':email, 'desig':desig})
         if(bool(result)):
             self.redirect('/?username&email=taken')
@@ -58,14 +58,16 @@ class SignupHandler(RequestHandler):
             password=hashlib.sha256(password).hexdigest()
             now=datetime.now()
             time=now.strftime("%d-%m-%Y %I:%M %p")
-            result = yield db.users.insert({'photo_link' : '','username' : username, 'password' : password, 'email' : email, 'name' : name,
-											'desig':desig,'signup' : 0,'social_accounts' : {}, 'joined_on' : time})
+            result = yield db.users.insert({'photo_link' : '','username' : username, 'password' : password, 'email' : email, 'name' : name,'services' : [],'contact':contact,
+                                            'desig':desig,'signup' : 0,'social_accounts' : {}, 'joined_on' : time})
             self.set_secure_cookie('user',str(result))
+            message = 'Hey' + name + ',  Welcome to AutoMed!'
+            sendMessage(contact, message)
             if desig=="doctor":
-				self.redirect('/dashboard/doctor')
+                self.redirect('/dashboard/doctor')
             else:
-				self.redirect('/dashboard/patient')
-            
+                self.redirect('/dashboard/patient')
+
 class LoginHandler(RequestHandler):
 
     @removeslash
@@ -81,13 +83,13 @@ class LoginHandler(RequestHandler):
         if bool(result):
             self.set_secure_cookie('user', str(result['_id']))
             if result['desig']=="doctor":
-				self.redirect('/dashboard/doctor')
+                self.redirect('/dashboard/doctor')
             else:
-				self.redirect('/dashboard/patient')
-               
+                self.redirect('/dashboard/patient')
+
         else:
             self.redirect('/?credentials=False')
-            
+
 class LogoutHandler(RequestHandler):
     @removeslash
     @coroutine
@@ -98,30 +100,64 @@ class LogoutHandler(RequestHandler):
         else:
             self.redirect('/?activesession=false')
 class DoctorDashboardHandler(RequestHandler):
-	@removeslash
-	@coroutine
-	def get(self):
-		userInfo=None
-		if bool(self.get_secure_cookie('user')):
-			current_id = self.get_secure_cookie('user')
-			userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
-			print userInfo
-			self.render('DoctorDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,loggedIn = bool(self.get_secure_cookie("user"))))
-		else:
-			self.redirect('/?loggedIn=False')
-			
+    @removeslash
+    @coroutine
+    def get(self):
+        userInfo=None
+        validppl=list()
+        if bool(self.get_secure_cookie('user')):
+            current_id = self.get_secure_cookie('user')
+            userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
+            print userInfo
+            validmsg=db.serviceRequests.find({'aliases':{'toid':ObjectId(current_id)},'Service.0.accepted':1})
+            if validmsg:
+             while (yield validmsg.fetch_next):
+                         wdoc = validmsg.next_object()
+                         print '\nrecieved requests'
+                         print wdoc
+                         validppl.append(wdoc)
+            #validmsg=db.serviceRequests.find({'aliases.0.fromid':ObjectId(current_id),'Service.0.accepted':1})
+            #if validmsg:
+            # while (yield validmsg.fetch_next):
+            #            wdoc = validmsg.next_object()
+            #            print '\nsent requests'
+            #            print wdoc
+            #            validppl1.append(wdoc)
+
+            self.render('doc_dash.html',validppl=validppl,result = dict(name='AutoMed',userInfo=userInfo,loggedIn = bool(self.get_secure_cookie("user"))))
+        else:
+            self.redirect('/?loggedIn=False')
+
+
 class PatientDashboardHandler(RequestHandler):
-	@removeslash
-	@coroutine
-	def get(self):
-		userInfo=None
-		if bool(self.get_secure_cookie('user')):
-			current_id = self.get_secure_cookie('user')
-			userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
-			print userInfo
-			self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,loggedIn = bool(self.get_secure_cookie("user"))))
-		else:
-			self.redirect('/?loggedIn=False')
+    @removeslash
+    @coroutine
+    def get(self):
+        userInfo=None
+        if bool(self.get_secure_cookie('user')):
+            current_id = self.get_secure_cookie('user')
+            userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
+            print userInfo
+
+            validmsg=db.serviceRequests.find({'aliases':{'toid':ObjectId(current_id)},'Service.0.accepted':1})
+            if validmsg:
+             while (yield validmsg.fetch_next):
+                         wdoc = validmsg.next_object()
+                         print '\nrecieved requests'
+                         print wdoc
+                         validppl.append(wdoc)
+
+            validmsg=db.serviceRequests.find({'aliases.0.fromid':ObjectId(current_id),'Service.0.accepted':1})
+            if validmsg:
+             while (yield validmsg.fetch_next):
+                         wdoc = validmsg.next_object()
+                         print '\nsent requests'
+                         print wdoc
+                         validppl1.append(wdoc)
+
+            self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,loggedIn = bool(self.get_secure_cookie("user"))))
+        else:
+            self.redirect('/?loggedIn=False')
 
 class ServiceRequestHandler(RequestHandler):
 
@@ -139,10 +175,10 @@ class ServiceRequestHandler(RequestHandler):
         userInfo = yield db.users.find_one({'email':email})
         #validation
         for sinfo in userInfo['services']:
-			if sinfo['service']==service and sinfo['cost']==cost:	
-				self.render('servicerequest.html', result = {'user' : userInfo['username'], 'service' : service, 'cost' : cost})
-				
-        
+            if sinfo['service']==service and sinfo['cost']==cost:
+                self.render('servicerequest.html', result = {'user' : userInfo['username'], 'service' : service, 'cost' : cost})
+
+
         self.redirect('/profile/'+user)
     @coroutine
     @removeslash
@@ -151,18 +187,18 @@ class ServiceRequestHandler(RequestHandler):
         cost = self.get_argument('cost')
         recvUser = self.get_argument('user')
         s=self.get_secure_cookie('user')
-        
+
         now = datetime.now()
         time = now.strftime("%d-%m-%Y %I:%M %p")
         userInfo=yield db.users.find_one({'_id':ObjectId(s)})
         recvInfo=yield db.users.find_one({'username':recvUser})
-        #srequest = yield db.serviceRequests.insert({'From' : s, 'To' : recvUser, 'Service' : {'service' : service, 'cost' : cost,'accepted':0}})       
-        srequest = yield db.serviceRequests.insert({'aliases':[{'fromid':s},{'toid':recvInfo['_id']}],'Service':[{"accepted":0},{'service':service},{"sentby":userInfo["username"]},{"recievedby":recvInfo["username"]},{"time":time}]})
+        #srequest = yield db.serviceRequests.insert({'From' : s, 'To' : recvUser, 'Service' : {'service' : service, 'cost' : cost,'accepted':0}})
+        srequest = yield db.serviceRequests.insert({'aliases':[{'fromid':s},{'toid':ObjectId(recvInfo['_id'])}],'Service':[{"accepted":0},{'service':service},{"sentby":userInfo["username"]},{"recievedby":recvInfo["username"]},{"time":time}]})
         if bool(srequest):
             self.redirect('/?sendrequest=True')
         else:
             self.redirect('/?sendrequest=False')
-            
+
 class SearchHandler(RequestHandler):
     @coroutine
     @removeslash
@@ -205,56 +241,141 @@ class AcceptServicesHandler(RequestHandler):
     @removeslash
     @coroutine
     def get(self):
-		#srequest=db.serviceRequests.find({})
-		msgs=list()
-		result=db.serviceRequests.find({'aliases':{'toid':ObjectId(self.get_secure_cookie('user'))}})
-		while(yield result.fetch_next):
-			doc=result.next_object()
-			print doc
-			msgs.append(doc)
-		self.render("view_services.html",msgs=msgs)
+        #srequest=db.serviceRequests.find({})
+        msgs=list()
+        result=db.serviceRequests.find({'aliases':{'toid':ObjectId(self.get_secure_cookie('user'))}})
+        while(yield result.fetch_next):
+            doc=result.next_object()
+            print doc
+            msgs.append(doc)
+        self.render("view_services.html",msgs=msgs)
     @removeslash
     @coroutine
     def post(self):
-		sid=self.get_argument('sid')
-		result=yield db.serviceRequests.find_one({'aliases':{'toid':ObjectId(self.get_secure_cookie('user'))},'_id':ObjectId(sid)})
-		if bool(result):
-			yield db.serviceRequests.update({'_id':ObjectId(sid)},{'$set':{'Service.0.accepted':1}})
-			self.redirect('/?acceptService=True')
+        sid=self.get_argument('sid')
+        result=yield db.serviceRequests.find_one({'aliases':{'toid':ObjectId(self.get_secure_cookie('user'))},'_id':ObjectId(sid)})
+        if bool(result):
+            yield db.serviceRequests.update({'_id':ObjectId(sid)},{'$set':{'Service.0.accepted':1}})
+            self.redirect('/?acceptService=True')
+        else:
+            self.redirect('/?acceptService=False')
+
+class PatientProfileHandler(RequestHandler):
+	@coroutine
+	@removeslash
+	def get(self):
+		s=self.get_secure_cookie('user')
+		obId=self.get_argument('obId')
+		if(bool(s)):
+			result=db.serviceRequests.find({'aliases':{'fromid':ObjectId(obId),'toid':s},'Service.0.accepted':1})
+			if(bool(result)):
+				patInfo=yield db.users.find_one({'_id':ObjectId(obId)})
+				print patInfo
+				self.render('patient.html',patInfo=patInfo)			
+
+
+
+class PrescriptionHandler(RequestHandler):
+    @coroutine
+    @removeslash
+    def post(self):
+		medname=False
+		s=self.get_secure_cookie('user')
+		obId=self.get_argument('obId')
+		if(bool(s)):
+			#db.prescriptions.insert({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]})
+			mednames=self.get_arguments('med_0')
+			mornings=self.get_arguments('Morning')
+			afternoons=self.get_arguments('Afternoon')
+			evenings=self.get_arguments('Evening')
+			
+			#durations=self.get_arguments('duration')
+			
+			mednames=[str(x) for x in mednames]
+			mornings=[str(x) for x in mornings]
+			afternoons=[str(x) for x in afternoons]
+			evenings=[str(x) for x in evenings]
+			
+			#print "\nMedname: ",mednames
+			#print "\nMornings: ",mornings
+			#print "\nAfternoons: ",afternoons
+			#print "\nEvenings: ",evenings
+			daycount=self.get_argument('duration')
+			if not daycount:
+				daycount=0
+			for i in range(5):
+			
+				if i> len(mednames):
+					break
+
+				try:
+				    morning=mornings[i]
+				    afternoon=afternoons[i]
+				    evening=evenings[i]
+				    print morning,afternoon,evening
+				    yield db.prescriptions.update({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]},{'$push':{'medicines':{'mn':mednames[i],'morning':mornings[i],'afternoon':afternoons[i],'evening':evenings[i],'daycount':int(daycount)}}},{upsert:True})
+
+				except:
+					pass
+				#duration=durations[i]
+				
+				#morning=self.get_argument('mor_'+str(i))
+				#afternoon=self.get_argument('after_'+str(i))
+				#evening=self.get_argument('evening_'+str(i))
+				#daycount=self.get_argument('daycount_'+str(i))
+				#morning=self.get_arguments('Morning')
+				#afternoon=self.get_argument('Afternoon')
+				#evening=self.get_argument('Evening')
+				#daycount=self.get_argument('daycount_'+st)			
+			
+			self.redirect('/?addPrescription=True')
 		else:
-			self.redirect('/?acceptService=False') 			
+			self.redirect('/?loggedIn=False')
+			
+class PItobetold(RequestHandler):
+	def get(self):
+		#pi can access the server from internet if its connected to net download data and store in his own db
+		#s=secureid #this is used to configure pi
+		# the secureid and the user cookie must be same for the pi to run properly
+		result=db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+		if bool(result):
+			db=MotorClient().medOfPi
+			db.insert(result)
+		else:
+			self.write("NO prescription written yet")
 
 class UserProfileHandler(RequestHandler):
 
     @coroutine
     @removeslash
-    def get(self, username):
+    def get(self,username):
         data = []
         userInfo = None
-        userInfo = yield db.users.find_one({'_id' : ObjectId(self.get_secure_cookie('user'))})
-        data.append(setUserInfo(userInfo,'username','email','photo_link'))
-        userInfo = None
+        #userInfo = yield db.users.find_one({'_id' : ObjectId(self.get_secure_cookie('user'))})
+        #data.append(setUserInfo(userInfo,'username','email','photo_link'))
 
-        if username != 'Dummy':
 
-            userInfo = yield db.users.find_one({'username':username})
-            if bool(userInfo):
-                data.append(json.loads(json_util.dumps(userInfo)))
+        #if username != 'Dummy':
 
-                if bool(self.get_secure_cookie('user')):
-                    self.render('profile_others.html',result= dict(data=data,loggedIn = True))
-                else:
-                    self.render('profile_others.html',result= dict(data=data,loggedIn = False))
+        userInfo = yield db.users.find_one({'username':username})
+        if bool(userInfo):
+            data.append(json.loads(json_util.dumps(userInfo)))
+
+            if bool(self.get_secure_cookie('user')):
+                print '\nData:',data,'\n'
+                self.render('doc_others.html',result= dict(data=data,loggedIn = True))
             else:
-                self.redirect('/?username=False')
+                self.render('doc_others.html',result= dict(data=data,loggedIn = False))
         else:
-            userInfo = {}
-            self.render('profile_others.html',result= dict(data=data,loggedIn = True))		
+            self.redirect('/?username=False')
+        #else:
+         #   userInfo = {}
+          #  self.render('profile_others.html',result= dict(data=data,loggedIn = True))
 settings = dict(
-		template_path = os.path.join(os.path.dirname(__file__), "templates"),
-		static_path = os.path.join(os.path.dirname(__file__), "static"),
-		cookie_secret="35an18y3-u12u-7n10-4gf1-102g23ce04n6",
-		debug=True)
+        template_path = os.path.join(os.path.dirname(__file__), "templates"),
+        static_path = os.path.join(os.path.dirname(__file__), "static"),
+        cookie_secret="35an18y3-u12u-7n10-4gf1-102g23ce04n6",
+        debug=True)
 
 application=Application([
 (r"/", IndexHandler),
@@ -262,12 +383,16 @@ application=Application([
 (r"/login",LoginHandler),
 (r"/profile/(\w+)",UserProfileHandler),
 (r"/dashboard/patient", PatientDashboardHandler),
-(r"/dashboard/doctor",DoctorDashboardHandler),	
-(r"/search",SearchHandler) 
+(r"/dashboard/doctor",DoctorDashboardHandler),  
+(r"/search",SearchHandler),
+(r"/acceptService",AcceptServicesHandler),
+(r"/serviceRequest",ServiceRequestHandler),
+(r"/patient",PatientProfileHandler), 
+(r"/prescribe",PrescriptionHandler)
 ],**settings)
 
 if __name__ == "__main__":
-	server = HTTPServer(application)
-	server.listen(os.environ.get("PORT", 5000))
-	IOLoop.current().start()
-	
+    server = HTTPServer(application)
+    server.listen(os.environ.get("PORT", 5000))
+    IOLoop.current().start()
+
