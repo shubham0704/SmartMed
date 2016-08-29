@@ -43,7 +43,7 @@
 				<h5 class="header col s12 light">A automated IOT enabled medicine environment</h5>
 			</div>
 			<div class="row center">
-				<a href="http://rahulakrishna.github.io" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+				<a href="#sign" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
 			</div>
 			<br><br>
 
@@ -156,28 +156,37 @@
 		<!-- Modal Structure -->
 		<div id="sign" class="modal">
 			<div class="modal-content">
-				<h4>Log In/ Sign Up</h4>
-				<!--<p>A bunch of text</p>-->
-                <a href=""  class="signin">Sign In</a>
-			<div class="form">
-				<form action="/login" method="post">
-				<input type="text"  name="username" placeholder="username"/></br>
-				<input type="password" name="password" placeholder="password"/></br>
-				<input type="submit"  name="submit" value="Sign in"/>
-				</form>
-			</div>
-		<a href=""  class="signup"  onclick="">Sign up</a>
-			<div class="form">
-				<form action="/signup" method="post">
-					<input type="text"  name="username_signup" placeholder="username"/></br>
-				<input type="password" name="password_signup" placeholder="password"/></br>
-				<input type="text" name="name" placeholder="name"/></br>
-				<input type="text" name="designation" placeholder="Doctor/Patient"/></br>
-				<input type="text" name="emailID" placeholder="emailID"/></br>
-                    <input type="text" name="contact" placeholder="contact"/></br>
-				<input type="submit"  name="submit" value="Sign up"/></br>
-				</form>
-			</div>
+
+						<div class="row">
+		    				<div class="col s12">
+						      <ul class="tabs">
+						        <li class="tab col s6"><a class="active" href="#test1">Login</a></li>
+						        <li class="tab col s6"><a href="#test2">Sign Up</a></li>
+						      </ul>
+		    				</div>
+							    <div id="test1" class="col s12">
+							    	<div class="form">
+										<form action="/login" method="post">
+											<input type="text"  name="username" placeholder="username"/></br>
+											<input type="password" name="password" placeholder="password"/></br>
+											<input type="submit"  name="submit" value="Sign in"/>
+										</form>
+									</div>
+							    </div>
+							    <div id="test2" class="col s12">
+									<div class="form">
+										<form action="/signup" method="post">
+											<input type="text"  name="username_signup" placeholder="username"/></br>
+										<input type="password" name="password_signup" placeholder="password"/></br>
+										<input type="text" name="name" placeholder="name"/></br>
+										<input type="text" name="designation" placeholder="Doctor/Patient"/></br>
+										<input type="text" name="emailID" placeholder="emailID"/></br>
+						                    <input type="text" name="contact" placeholder="contact"/></br>
+										<input type="submit"  name="submit" value="Sign up"/></br>
+										</form>
+									</div>				    	
+							    </div>
+					  </div>
 			</div>
 			<div class="modal-footer">
 				<a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Back</a>
@@ -191,6 +200,7 @@
 			$(document).ready(function(){
     			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     			$('.modal-trigger').leanModal();
+    			$('ul.tabs').tabs();
 
     			$(window).bind('scroll',function(){
     				if($(window).scrollTop()>700){
