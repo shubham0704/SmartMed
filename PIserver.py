@@ -1,11 +1,11 @@
 #Tornado Libraries
-from tornado.ioloop import IOLoop
+from tornado.ioloop import IOLoop,PeriodicCallback
 from tornado.escape import json_encode
 from tornado.web import RequestHandler, Application, asynchronous, removeslash
 from tornado.httpserver import HTTPServer
 from tornado.httpclient import AsyncHTTPClient
 from tornado.gen import engine, Task, coroutine
-
+from tornado.websocket import WebSocketHandler
 #Other Libraries
 import urllib
 from passlib.hash import sha256_crypt as scrypt
@@ -27,7 +27,11 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from PIL import Image
 import logging
+import RPi.GPIO as GPIO
 
+GPIO.setboard(GPIO.BOARD)
+GPIO.setup(10,GPIO.OUT)
+GPIO.output(10,False)
 db=MotorClient().med
 class IndexHandler(RequestHandler):
     @removeslash
@@ -243,7 +247,7 @@ class AcceptServicesHandler(RequestHandler):
     def get(self):
         #srequest=db.serviceRequests.find({})
         msgs=list()
-        result=db.serviceRequests.find({'aliases':{'toid':ObjectId(self.get_secure_cookie('user'))}})
+        result=db.serviceRequests.find({'aliases':{'toid':ObjectId(self.get_secure_cookie('user'))},'Service.0.accepted':0})
         while(yield result.fetch_next):
             doc=result.next_object()
             print doc
@@ -261,17 +265,17 @@ class AcceptServicesHandler(RequestHandler):
             self.redirect('/?acceptService=False')
 
 class PatientProfileHandler(RequestHandler):
-	@coroutine
-	@removeslash
-	def get(self):
-		s=self.get_secure_cookie('user')
-		obId=self.get_argument('obId')
-		if(bool(s)):
-			result=db.serviceRequests.find({'aliases':{'fromid':ObjectId(obId),'toid':s},'Service.0.accepted':1})
-			if(bool(result)):
-				patInfo=yield db.users.find_one({'_id':ObjectId(obId)})
-				print patInfo
-				self.render('patient.html',patInfo=patInfo)			
+    @coroutine
+    @removeslash
+    def get(self):
+        s=self.get_secure_cookie('user')
+        obId=self.get_argument('obId')
+        if(bool(s)):
+            result=db.serviceRequests.find({'aliases':{'fromid':ObjectId(obId),'toid':s},'Service.0.accepted':1})
+            if(bool(result)):
+                patInfo=yield db.users.find_one({'_id':ObjectId(obId)})
+                print patInfo
+                self.render('patient.html',patInfo=patInfo)         
 
 
 
@@ -279,70 +283,71 @@ class PrescriptionHandler(RequestHandler):
     @coroutine
     @removeslash
     def post(self):
-		medname=False
-		s=self.get_secure_cookie('user')
-		obId=self.get_argument('obId')
-		if(bool(s)):
-			#db.prescriptions.insert({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]})
-			mednames=self.get_arguments('med_0')
-			mornings=self.get_arguments('Morning')
-			afternoons=self.get_arguments('Afternoon')
-			evenings=self.get_arguments('Evening')
-			
-			#durations=self.get_arguments('duration')
-			
-			mednames=[str(x) for x in mednames]
-			mornings=[str(x) for x in mornings]
-			afternoons=[str(x) for x in afternoons]
-			evenings=[str(x) for x in evenings]
-			
-			#print "\nMedname: ",mednames
-			#print "\nMornings: ",mornings
-			#print "\nAfternoons: ",afternoons
-			#print "\nEvenings: ",evenings
-			daycount=self.get_argument('duration')
-			if not daycount:
-				daycount=0
-			for i in range(5):
-			
-				if i> len(mednames):
-					break
+        medname=False
+        s=self.get_secure_cookie('user')
+        obId=self.get_argument('obId')
+        if(bool(s)):
+            db.prescriptions.insert({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]})
+            mednames=self.get_arguments('med_0')
+            mornings=self.get_arguments('Morning')
+            afternoons=self.get_arguments('Afternoon')
+            evenings=self.get_arguments('Evening')
+            
+            #durations=self.get_arguments('duration')
+            
+            mednames=[str(x) for x in mednames]
+            mornings=[str(x) for x in mornings]
+            afternoons=[str(x) for x in afternoons]
+            evenings=[str(x) for x in evenings]
+            
+            #print "\nMedname: ",mednames
+            #print "\nMornings: ",mornings
+            #print "\nAfternoons: ",afternoons
+            #print "\nEvenings: ",evenings
+            daycount=self.get_argument('duration')
+            if not daycount:
+                daycount=0
+            for i in range(5):
+            
+                if i> len(mednames):
+                    break
 
-				try:
-				    morning=mornings[i]
-				    afternoon=afternoons[i]
-				    evening=evenings[i]
-				    print morning,afternoon,evening
-				    yield db.prescriptions.update({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]},{'$push':{'medicines':{'mn':mednames[i],'morning':mornings[i],'afternoon':afternoons[i],'evening':evenings[i],'daycount':int(daycount)}}},{upsert:True})
-
-				except:
-					pass
-				#duration=durations[i]
-				
-				#morning=self.get_argument('mor_'+str(i))
-				#afternoon=self.get_argument('after_'+str(i))
-				#evening=self.get_argument('evening_'+str(i))
-				#daycount=self.get_argument('daycount_'+str(i))
-				#morning=self.get_arguments('Morning')
-				#afternoon=self.get_argument('Afternoon')
-				#evening=self.get_argument('Evening')
-				#daycount=self.get_argument('daycount_'+st)			
-			
-			self.redirect('/?addPrescription=True')
-		else:
-			self.redirect('/?loggedIn=False')
-			
-class PItobetold(RequestHandler):
-	def get(self):
-		#pi can access the server from internet if its connected to net download data and store in his own db
-		#s=secureid #this is used to configure pi
-		# the secureid and the user cookie must be same for the pi to run properly
-		result=db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
-		if bool(result):
-			db=MotorClient().medOfPi
-			db.insert(result)
-		else:
-			self.write("NO prescription written yet")
+                try:
+                    morning=mornings[i]
+                    afternoon=afternoons[i]
+                    evening=evenings[i]
+                    print morning,afternoon,evening
+                    print mednames
+                    result=yield db.prescriptions.update({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]},{'$push':{'medicines':{'mn':mednames[i],'morning':mornings[i],'afternoon':afternoons[i],'evening':evenings[i],'daycount':int(daycount)}}})
+                    print '\n',result
+                except:
+                    pass
+                #duration=durations[i]
+                
+                #morning=self.get_argument('mor_'+str(i))
+                #afternoon=self.get_argument('after_'+str(i))
+                #evening=self.get_argument('evening_'+str(i))
+                #daycount=self.get_argument('daycount_'+str(i))
+                #morning=self.get_arguments('Morning')
+                #afternoon=self.get_argument('Afternoon')
+                #evening=self.get_argument('Evening')
+                #daycount=self.get_argument('daycount_'+st)         
+            
+            self.redirect('/?addPrescription=True')
+        else:
+            self.redirect('/?loggedIn=False')
+            
+#class PItobetold(RequestHandler):
+ #   def get(self):
+        #pi can access the server from internet if its connected to net download data and store in his own db
+        #s=secureid #this is used to configure pi
+        # the secureid and the user cookie must be same for the pi to run properly
+  #      result=db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+   #     if bool(result):
+    #        db=MotorClient().medOfPi
+     #       db.insert(result)
+      #  else:
+       #     self.write("NO prescription written yet")
 
 class UserProfileHandler(RequestHandler):
 
@@ -371,6 +376,69 @@ class UserProfileHandler(RequestHandler):
         #else:
          #   userInfo = {}
           #  self.render('profile_others.html',result= dict(data=data,loggedIn = True))
+
+
+class PItobetold(RequestHandler):
+	@coroutine
+	@removeslash
+	def get(self):
+		#pi can access the server from internet if its connected to net download data and store in his own db
+		#s=secureid #this is used to configure pi
+		# the secureid and the user cookie must be same for the pi to run properly
+
+		db=MotorClient().med
+		result=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+		if bool(result):
+			db=MotorClient().medOfPi
+			resultLocal=db.prescriptions.find()
+			if bool(resultLocal) and resultLocal!=result:
+			    db.prescriptions.remove({})
+			yield db.prescriptions.insert(result)
+			now=datetime.now()
+			time=now.strftime("%d-%m-%Y %I:%M %p")
+			yield db.prescriptions.findOneAndUpdate({'$set':{'startTime':time}})
+		else:
+			self.write("NO prescription written yet")
+		self.redirect('/commandPi')
+
+
+class CommandPi(RequestHandler):
+	def get(self):
+		result=db.prescriptions.find_one()
+		
+		
+		
+class LedWs(WebSocketHandler):
+		
+
+	def get_compression_options(self):
+        # Non-None enables compression with default options.
+		return {}
+
+	def open(self):
+		print "Connection open"
+		self.write_message("Connection opened right now !")
+		
+	def on_close(self):
+		logging.info("Connection closed from server side")
+	def on_message(self,message):
+		print "Message Recieved: {}".format(message)
+		if (bool(int(message))):
+			#GPIO.output(int(message),True)
+			self.write_message("Your Message: {}".format(message))
+
+@coroutine
+def checkTimeAndSay():
+	time1=12
+	t=datetime.now().hour
+	if t==time1:
+		#logging.info(t)
+		print 'medicine time is',t
+		GPIO.output(10,True)
+	else:
+		print 'still checking'
+
+
 settings = dict(
         template_path = os.path.join(os.path.dirname(__file__), "templates"),
         static_path = os.path.join(os.path.dirname(__file__), "static"),
@@ -388,11 +456,19 @@ application=Application([
 (r"/acceptService",AcceptServicesHandler),
 (r"/serviceRequest",ServiceRequestHandler),
 (r"/patient",PatientProfileHandler), 
-(r"/prescribe",PrescriptionHandler)
+(r"/prescribe",PrescriptionHandler),
+(r"/echo",LedWs),
+(r"/commandPi",CommandPi),
+(r"/tellpi",PItobetold)
 ],**settings)
 
 if __name__ == "__main__":
     server = HTTPServer(application)
     server.listen(os.environ.get("PORT", 5000))
+    #IOLoop.instance().stop()
+    main_loop=IOLoop.instance()
+    PeriodicCallback(checkTimeAndSay,500,main_loop).start()
     IOLoop.current().start()
+    
+    
 

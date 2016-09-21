@@ -27,13 +27,16 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from PIL import Image
 import logging
-
+import RPi.GPIO as GPIO
 db=MotorClient().medOfPi
 #set time values of morning,afternoon,evening
 #format hr,min
 morning=(8,30)
 afternoon=(1,30)
 evening=(8,0)
+GPIO.setboard(GPIO.BOARD)
+GPIO.setup(10,GPIO.OUT)
+GPIO.output(10,False)
 class PItobetold(RequestHandler):
 	@coroutine
 	@removeslash
@@ -41,6 +44,7 @@ class PItobetold(RequestHandler):
 		#pi can access the server from internet if its connected to net download data and store in his own db
 		#s=secureid #this is used to configure pi
 		# the secureid and the user cookie must be same for the pi to run properly
+		s='57a8a71bf6603810dea8c957'
 		db=MotorClient().med
 		result=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
 		if bool(result):
@@ -95,7 +99,7 @@ application=Application([
 
 if __name__ == "__main__":
 	server = HTTPServer(application)
-	server.listen(os.environ.get("PORT", 5000))
+	server.listen(os.environ.get("PORT", 8000))
 	IOLoop.current().start()
 		
 		
