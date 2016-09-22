@@ -4,7 +4,7 @@ from tornado.escape import json_encode
 from tornado.web import RequestHandler, Application, asynchronous, removeslash
 from tornado.httpserver import HTTPServer
 from tornado.httpclient import AsyncHTTPClient
-from tornado.gen import engine, Task, coroutine
+from tornado.gen import engine, Task, coroutine,sleep
 from tornado.websocket import WebSocketHandler
 #Other Libraries
 import urllib
@@ -32,6 +32,9 @@ import logging
 #GPIO.setboard(GPIO.BOARD)
 #GPIO.setup(10,GPIO.OUT)
 #GPIO.output(10,False)
+morning=8
+afternoon=16
+evening=20
 db=MotorClient().med
 class IndexHandler(RequestHandler):
     @removeslash
@@ -141,6 +144,7 @@ class PatientDashboardHandler(RequestHandler):
         userInfo=None
         if bool(self.get_secure_cookie('user')):
             current_id = self.get_secure_cookie('user')
+            print current_id
             userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
             print userInfo
 
@@ -160,7 +164,6 @@ class PatientDashboardHandler(RequestHandler):
                          print wdoc
                          validppl1.append(wdoc)
             prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(current_id)}})
-            print '\n',prescription,'\n'
             self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,prescription=prescription,loggedIn = bool(self.get_secure_cookie("user"))))
         else:
             self.redirect('/?loggedIn=False')
@@ -287,6 +290,7 @@ class PrescriptionHandler(RequestHandler):
     def post(self):
         medname=False
         s=self.get_secure_cookie('user')
+        print s
         obId=self.get_argument('obId')
         if(bool(s)):
             db.prescriptions.insert({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]})
@@ -321,6 +325,7 @@ class PrescriptionHandler(RequestHandler):
                     print morning,afternoon,evening
                     print mednames
                     result=yield db.prescriptions.update({'aliases':[{'fromid':ObjectId(s)},{'toid':ObjectId(obId)}]},{'$push':{'medicines':{'mn':mednames[i],'morning':mornings[i],'afternoon':afternoons[i],'evening':evenings[i],'daycount':int(daycount)}}})
+               
                     print '\n',result
                 except:
                     pass
@@ -334,7 +339,6 @@ class PrescriptionHandler(RequestHandler):
                 #afternoon=self.get_argument('Afternoon')
                 #evening=self.get_argument('Evening')
                 #daycount=self.get_argument('daycount_'+st)         
-            
             self.redirect('/?addPrescription=True')
         else:
             self.redirect('/?loggedIn=False')
@@ -429,29 +433,64 @@ class LedWs(WebSocketHandler):
             #GPIO.output(int(message),True)
             self.write_message("Your Message: {}".format(message))
 
-@coroutine
-def checkTimeAndSay(): 
-    #s=self.get_secure_cookie('user')
-    #prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
-   """ try:
-        prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
-        print prescription
-    except:"""
-   """ time1=12
-    t=datetime.now().hour
-    if t==time1:
-         #logging.info(t)
-         print 'medicine time is',t
-         #GPIO.output(10,True)
-    else:
-         print 'still checking'
+"""class BaseHandler(RequestHandler):
+    def get_current_user(self):
+        return self.get_secure_cookie('user')
 
-	"""
+
+class checkTime(BaseHandler):
+    @coroutine
+    def checkTimeAndSay(self):
+        print 'yes'
+        try: 
+            s=self.get_current_user
+            print '\n',s
+        except:
+            pass
+        #prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+         try:
+            prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+            print prescription
+        except:
+        time1=12
+        t=datetime.now().hour
+        if t==time1:
+             #logging.info(t)
+             print 'medicine time is',t
+             #GPIO.output(10,True)
+        else:
+             print 'still checking'
+
+        """
+@coroutine
+def minute_loop2():
+	while True:
+		nxt = sleep(60) # Start the clock.
+		#user=current_user # Run while the clock is ticking.
+		#print user
+		s=ObjectId('57a612faf66038127990ddb4')
+		prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+		userInfo=yield db.users.find_one({'_id':s})
+		#print userInfo
+		#print prescription
+		t=datetime.now().hour
+		print t
+		print prescription['medicines'][0]['afternoon']
+		if bool(prescription['medicines'][0]['morning']) and t==morning:
+			#sendMessage(userInfo['contact'],'time for medicine')
+		elif bool(prescription['medicines'][0]['afternoon']) and t==afternoon:
+			#sendMessage(userInfo['contact'],'time for medicine')
+		elif bool(prescription['medicines'][0]['evening']) and t==evening:
+			#sendMessage(userInfo['contact'],'time for medicine')
+			
+		yield nxt # Wait for the timer to run out.        
+	
 settings = dict(
         template_path = os.path.join(os.path.dirname(__file__), "templates"),
         static_path = os.path.join(os.path.dirname(__file__), "static"),
         cookie_secret="35an18y3-u12u-7n10-4gf1-102g23ce04n6",
         debug=True)
+
 
 application=Application([
 (r"/", IndexHandler),
@@ -475,7 +514,8 @@ if __name__ == "__main__":
     server.listen(os.environ.get("PORT", 5000))
     #IOLoop.instance().stop()
     main_loop=IOLoop.instance()
-    PeriodicCallback(checkTimeAndSay,500,main_loop).start()
+    #PeriodicCallback(checkTime.checkTimeAndSay,500,main_loop).start()
+    IOLoop.current().spawn_callback(minute_loop2)
     IOLoop.current().start()
     
     
