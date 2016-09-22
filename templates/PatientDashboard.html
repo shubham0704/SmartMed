@@ -83,28 +83,30 @@
                         Your Prescription
                     </div>
                     {% if result['prescription']%}
+                    {% for medicine in result['prescription']['medicines'] %}
                     <div class="row">
                     
                     <div class="col s12">
-                    {{result['prescription']['medicines'][0]['mn'] }}
+                    {{medicine['mn'] }}
                     </div>
                     <div class="col s12">
-                    Daycount:{{result['prescription']['medicines'][0]['daycount'] }}
+                    Daycount:{{medicine['daycount'] }}
                     </div>
                    
                     <div class="row">
                    
                      <div class="col s4">
-						 Morning: {{result['prescription']['medicines'][0]['morning'] }}
+						 Morning: {{medicine['morning'] }}
                     
                      </div>
                      <div class="col s4">
-                         Afternoon: {{result['prescription']['medicines'][0]['afternoon'] }}
+                         Afternoon: {{medicine['afternoon'] }}
                      </div>
                      <div class="col s4">
-                         Evening:  {{result['prescription']['medicines'][0]['evening'] }} 
+                         Evening:  {{medicine['evening'] }} 
                      </div>
                     </div>
+                    {%end%}
                     {%end%}	
                     </div>
                     </div>      

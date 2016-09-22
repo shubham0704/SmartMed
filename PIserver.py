@@ -430,17 +430,23 @@ class LedWs(WebSocketHandler):
             self.write_message("Your Message: {}".format(message))
 
 @coroutine
-def checkTimeAndSay():
-    time1=12
+def checkTimeAndSay(): 
+    #s=self.get_secure_cookie('user')
+    #prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+   """ try:
+        prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+        print prescription
+    except:"""
+   """ time1=12
     t=datetime.now().hour
     if t==time1:
-        #logging.info(t)
-        print 'medicine time is',t
-        #GPIO.output(10,True)
+         #logging.info(t)
+         print 'medicine time is',t
+         #GPIO.output(10,True)
     else:
-        print 'still checking'
+         print 'still checking'
 
-
+	"""
 settings = dict(
         template_path = os.path.join(os.path.dirname(__file__), "templates"),
         static_path = os.path.join(os.path.dirname(__file__), "static"),
