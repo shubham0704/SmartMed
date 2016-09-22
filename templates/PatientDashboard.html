@@ -1,135 +1,138 @@
+<!DOCTYPE html>
 <html>
-	<head>
-	<title>YourDashboard</title>
-	<style>
-		 
-	#body{
-		background-color:d7d7f4;
-		}
-	#main{
-			margin:0 auto;
-			background-color:#00b3b3;
-			text-align: center;
-			font-family: 'Open Sans', sans-serif;
-			height: 200px;
-	}
-	
-	.table{
-		margin:10 auto;
-		padding-top:10px;
-		padding-left:35px;
-		padding-right:35px;
-		padding-bottom:35px;
-		border:5px 1a1a1a;
-		display:table;
-		font-family: 'Open Sans', sans-serif;
-	}
-	.row{
-		display:table-row;
-		border:5px 1a1a1a;
-	}
-	
-	.cell{
-			min-width: 10px;
-			max-width:40%;
-			border:50px solid #d7d7f4;
-			padding:150px;
-			padding-right:300px;
-				
-			display:table-cell;
-			border-collapse: collapse;
-			margin:10 auto;
-			background-color:ffffff;
-			
-		}
-		.shortcell{
-			max-width: 40%;
-			border:10px solid #d7d7f4;
-			padding:10px;
-			text-align:center;
-			display:table-cell;
-			margin:20 auto;
-			background-color:d7d7f4;
-		}
-		.table1{display:table;}
-		.row1{display:table-row;}
-		.cell1{display:table-cell;}
-		.shadow {
-  -moz-box-shadow:    3px 3px 5px 6px #ccc;
-  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
-  box-shadow:         3px 3px 5px 6px #ccc;
-}
-.button {
-    background-color: #CFD8DC; 
-    border: none;
-    color: black;
-    width: 90px;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: block;
-    font-size: 16px;
-    border: 1px solid #b0bec5;
-}
-.button:hover {
-    background-color: #80deea; 
-    color: white;
-}
-	</style>
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <head>
+        <!--Import materialize.css-->
+        <link href="../static/bower_components/materialize/dist/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+        <link rel="stylesheet" type="text/css" href="../static/bower_components/font-awesome/css/font-awesome.min.css">
+
+        <!-- <link rel="stylesheet" type="text/css" href="../static/css/PatientDashboard.css"> -->
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+        <!-- <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet"> -->
+        <title>Doctor Dashboard</title>
 	</head>
 	<body id="body">
-		<div id="main">
-			<img src="../static/sample-logo.jpg" height="100px" width="100px" style="float:left;padding-left:15px;padding-top:15px;">
-				Welcome, {{result['userInfo']['username']}}
-		</div>
-		<div>
-		<form action="/search" method="post">
+
+        <nav class="light-blue lighten-1" role="navigation">
+            <div class="container">
+                <div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo"><i class="fa fa-heartbeat"></i></a>
+                    <ul class="right">
+                        <li><b>Welcome, {{result['userInfo']['username']}}</b></li>
+                    </ul>
+                    <ul id="nav-mobile" class="side-nav">
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+                </div>
+            </div>
+            </nav>
+
+            <br><br><br>
+
+		<div class="row">
+            <div class="card col m6 push-m3">
+		      <form action="/search" method="post" class="col m12">
                  <input type="text" class=" search " name="query" placeholder="Search for doctors">
-               </form>
+            </form>
+            </div>
         </div>       
 		<div class="table">
+
 		<div class="row">
-		<div class="shortcell">Manual Control</div>
-		<div class="shortcell">Your Prescription</div>
+        		<div class="cell card col m6">
+                <div class="card-content">
+                <div class="card-title">Manual Control</div>
+        			<div id="messages"></div>
+        		<div class="row col s12">
+                
+                    <div class="col s2"><input  class="btn col s12" type="button" value="pin1" name="PIN1" onclick="tellServer('1')"></div>
+                    <div class="col s2"><input class="btn col s12" type="button" value="pin2" name="PIN2" onclick="tellServer('2')"></div>
+                
+                
+                    <div class="col s2"><input class="btn col s12" type="button" value="pin3" name="PIN3" onclick="tellServer('3')"></div>
+                    <div class="col s2"><input class="btn col s12" type="button" value="pin4" name="PIN4" onclick="tellServer('4')"></div>
+                
+                
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin5" name="PIN5" onclick="tellServer('5')"></div>
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin6"name="PIN6" onclick="tellServer('6')"></div>
+                
+                
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin7" name="PIN7" onclick="tellServer('7')"></div>
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin8" name="PIN8" onclick="tellServer('8')"></div>
+                
+                
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin9" name="PIN9" onclick="tellServer('9')"></div>
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin10" name="PIN10" onclick="tellServer('10')"></div>
+                
+                
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin11" name="PIN11" onclick="tellServer('11')"></div>
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin12" name="PIN12" onclick="tellServer('12')"></div>
+                
+                
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin13" name="PIN13" onclick="tellServer('13')"></div>
+                    <div class="col s2"><input type="button" class="btn col s12" value="pin14" name="PIN14" onclick="tellServer('14')"></div>
+                </div>
+            </div>
+        		</div>
+        		<div class="cell card col m6">
+                    <div class="card-content">
+                    <div class="card-title">
+                        Your Prescription
+                    </div>
+                    </div>      
+                </div>
 		</div>
-		<div class="row">
-		<div class="cell shadow">
-			<div id="messages"></div>
-		<div class="container table1">
-        <div class="innerContainer row1" >
-            <div class="cell1"><input  class="button" type="button" value="pin1" name="PIN1" onclick="tellServer('1')"></div>
-            <div class="cell1"><input class="button" type="button" value="pin2" name="PIN2" onclick="tellServer('2')"></div>
-        </div>
-        <div class="innerContainer row1" >
-            <div class="cell1"><input class="button" type="button" value="pin3" name="PIN3" onclick="tellServer('3')"></div>
-            <div class="cell1"><input class="button" type="button" value="pin4" name="PIN4" onclick="tellServer('4')"></div>
-        </div>
-        <div class="innerContainer row1">
-            <div class="cell1"><input type="button" class="button" value="pin5" name="PIN5" onclick="tellServer('5')"></div>
-            <div class="cell1"><input type="button" class="button" value="pin6"name="PIN6" onclick="tellServer('6')"></div>
-        </div>
-        <div class="innerContainer row1" >
-            <div class="cell1"><input type="button" class="button" value="pin7" name="PIN7" onclick="tellServer('7')"></div>
-            <div class="cell1"><input type="button" class="button" value="pin8" name="PIN8" onclick="tellServer('8')"></div>
-        </div>
-        <div class="innerContainer row1" >
-            <div class="cell1"><input type="button" class="button" value="pin9" name="PIN9" onclick="tellServer('9')"></div>
-            <div class="cell1"><input type="button" class="button" value="pin10" name="PIN10" onclick="tellServer('10')"></div>
-        </div>
-        <div class="innerContainer row1" >
-            <div class="cell1"><input type="button" class="button" value="pin11" name="PIN11" onclick="tellServer('11')"></div>
-            <div class="cell1"><input type="button" class="button" value="pin12" name="PIN12" onclick="tellServer('12')"></div>
-        </div>
-        <div class="innerContainer row1" >
-            <div class="cell1"><input type="button" class="button" value="pin13" name="PIN13" onclick="tellServer('13')"></div>
-            <div class="cell1"><input type="button" class="button" value="pin14" name="PIN14" onclick="tellServer('14')"></div>
-        </div>
-    </div>
 		</div>
-		<div class="cell shadow"></div>
-		</div>
-		</div>
+
+
+        <footer class="page-footer orange">
+            <div class="container">
+                <div class="row">
+                    <div class="col l6 s12">
+                        <h5 class="white-text">Smartmed</h5>
+                        <p class="grey-text text-lighten-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+
+                    </div>
+                    <div class="col l3 s12">
+                        <h5 class="white-text">Settings</h5>
+                        <ul>
+                            <li><a class="white-text" href="#!">Privacy</a></li>
+                            <li><a class="white-text" href="#!">Terms & Conditions</a></li>
+                            <li><a class="white-text" href="#!">Service Policy</a></li>
+                            <li><a class="white-text" href="#!">Media Kit</a></li>
+                        </ul>
+                    </div>
+                    <div class="col l3 s12">
+                        <h5 class="white-text">Connect</h5>
+                        <ul>
+                            <li><a class="white-text" href="#!">Facebook</a></li>
+                            <li><a class="white-text" href="#!">Twitter</a></li>
+                            <li><a class="white-text" href="#!">Linkedin</a></li>
+                            <li><a class="white-text" href="#!">Plus</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <div class="container">
+                    &#169; Rahul Krishna,shubham0704
+                </div>
+            </div>
+        </footer>
+
+
+
+
+
 		<script>
     var webSocket;
     var messages = document.getElementById("messages");
