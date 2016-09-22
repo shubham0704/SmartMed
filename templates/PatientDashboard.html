@@ -82,6 +82,31 @@
                     <div class="card-title">
                         Your Prescription
                     </div>
+                    {% if result['prescription']%}
+                    <div class="row">
+                    
+                    <div class="col s12">
+                    {{result['prescription']['medicines'][0]['mn'] }}
+                    </div>
+                    <div class="col s12">
+                    Daycount:{{result['prescription']['medicines'][0]['daycount'] }}
+                    </div>
+                   
+                    <div class="row">
+                   
+                     <div class="col s4">
+						 Morning: {{result['prescription']['medicines'][0]['morning'] }}
+                    
+                     </div>
+                     <div class="col s4">
+                         Afternoon: {{result['prescription']['medicines'][0]['afternoon'] }}
+                     </div>
+                     <div class="col s4">
+                         Evening:  {{result['prescription']['medicines'][0]['evening'] }} 
+                     </div>
+                    </div>
+                    {%end%}	
+                    </div>
                     </div>      
                 </div>
 		</div>

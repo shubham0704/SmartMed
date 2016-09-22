@@ -65,8 +65,8 @@ class SignupHandler(RequestHandler):
             result = yield db.users.insert({'photo_link' : '','username' : username, 'password' : password, 'email' : email, 'name' : name,'services' : [],'contact':contact,
                                             'desig':desig,'signup' : 0,'social_accounts' : {}, 'joined_on' : time})
             self.set_secure_cookie('user',str(result))
-            message = 'Hey' + name + ', Welcome to AutoMed!'
-            message = 'Hey' + name + ', Welcome to AutoMed!'
+            message = 'Hey ' + name + ', Welcome to AutoMed!'
+            # message = 'Hey' + name + ', Welcome to AutoMed!'
             sendMessage(contact, message)
             if desig=="doctor":
                 self.redirect('/dashboard/doctor')
@@ -159,8 +159,9 @@ class PatientDashboardHandler(RequestHandler):
                          print '\nsent requests'
                          print wdoc
                          validppl1.append(wdoc)
-
-            self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,loggedIn = bool(self.get_secure_cookie("user"))))
+            prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(current_id)}})
+            print '\n',prescription,'\n'
+            self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,prescription=prescription,loggedIn = bool(self.get_secure_cookie("user"))))
         else:
             self.redirect('/?loggedIn=False')
 
@@ -380,64 +381,64 @@ class UserProfileHandler(RequestHandler):
 
 
 class PItobetold(RequestHandler):
-	@coroutine
-	@removeslash
-	def get(self):
-		#pi can access the server from internet if its connected to net download data and store in his own db
-		#s=secureid #this is used to configure pi
-		# the secureid and the user cookie must be same for the pi to run properly
+    @coroutine
+    @removeslash
+    def get(self):
+        #pi can access the server from internet if its connected to net download data and store in his own db
+        #s=secureid #this is used to configure pi
+        # the secureid and the user cookie must be same for the pi to run properly
 
-		db=MotorClient().med
-		result=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
-		if bool(result):
-			db=MotorClient().medOfPi
-			resultLocal=db.prescriptions.find()
-			if bool(resultLocal) and resultLocal!=result:
-			    db.prescriptions.remove({})
-			yield db.prescriptions.insert(result)
-			now=datetime.now()
-			time=now.strftime("%d-%m-%Y %I:%M %p")
-			yield db.prescriptions.findOneAndUpdate({'$set':{'startTime':time}})
-		else:
-			self.write("NO prescription written yet")
-		self.redirect('/commandPi')
+        db=MotorClient().med
+        result=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+        if bool(result):
+            db=MotorClient().medOfPi
+            resultLocal=db.prescriptions.find()
+            if bool(resultLocal) and resultLocal!=result:
+                db.prescriptions.remove({})
+            yield db.prescriptions.insert(result)
+            now=datetime.now()
+            time=now.strftime("%d-%m-%Y %I:%M %p")
+            yield db.prescriptions.findOneAndUpdate({'$set':{'startTime':time}})
+        else:
+            self.write("NO prescription written yet")
+        self.redirect('/commandPi')
 
 
 class CommandPi(RequestHandler):
-	def get(self):
-		result=db.prescriptions.find_one()
-		
-		
-		
+    def get(self):
+        result=db.prescriptions.find_one()
+        
+        
+        
 class LedWs(WebSocketHandler):
-		
+        
 
-	def get_compression_options(self):
+    def get_compression_options(self):
         # Non-None enables compression with default options.
-		return {}
+        return {}
 
-	def open(self):
-		print "Connection open"
-		self.write_message("Connection opened right now !")
-		
-	def on_close(self):
-		logging.info("Connection closed from server side")
-	def on_message(self,message):
-		print "Message Recieved: {}".format(message)
-		if (bool(int(message))):
-			#GPIO.output(int(message),True)
-			self.write_message("Your Message: {}".format(message))
+    def open(self):
+        print "Connection open"
+        self.write_message("Connection opened right now !")
+        
+    def on_close(self):
+        logging.info("Connection closed from server side")
+    def on_message(self,message):
+        print "Message Recieved: {}".format(message)
+        if (bool(int(message))):
+            #GPIO.output(int(message),True)
+            self.write_message("Your Message: {}".format(message))
 
 @coroutine
 def checkTimeAndSay():
-	time1=12
-	t=datetime.now().hour
-	if t==time1:
-		#logging.info(t)
-		print 'medicine time is',t
-		#GPIO.output(10,True)
-	else:
-		print 'still checking'
+    time1=12
+    t=datetime.now().hour
+    if t==time1:
+        #logging.info(t)
+        print 'medicine time is',t
+        #GPIO.output(10,True)
+    else:
+        print 'still checking'
 
 
 settings = dict(
