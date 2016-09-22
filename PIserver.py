@@ -27,11 +27,11 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from PIL import Image
 import logging
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
-GPIO.setboard(GPIO.BOARD)
-GPIO.setup(10,GPIO.OUT)
-GPIO.output(10,False)
+#GPIO.setboard(GPIO.BOARD)
+#GPIO.setup(10,GPIO.OUT)
+#GPIO.output(10,False)
 db=MotorClient().med
 class IndexHandler(RequestHandler):
     @removeslash
@@ -65,7 +65,8 @@ class SignupHandler(RequestHandler):
             result = yield db.users.insert({'photo_link' : '','username' : username, 'password' : password, 'email' : email, 'name' : name,'services' : [],'contact':contact,
                                             'desig':desig,'signup' : 0,'social_accounts' : {}, 'joined_on' : time})
             self.set_secure_cookie('user',str(result))
-            message = 'Hey' + name + ',  Welcome to AutoMed!'
+            message = 'Hey' + name + ', Welcome to AutoMed!'
+            message = 'Hey' + name + ', Welcome to AutoMed!'
             sendMessage(contact, message)
             if desig=="doctor":
                 self.redirect('/dashboard/doctor')
@@ -434,7 +435,7 @@ def checkTimeAndSay():
 	if t==time1:
 		#logging.info(t)
 		print 'medicine time is',t
-		GPIO.output(10,True)
+		#GPIO.output(10,True)
 	else:
 		print 'still checking'
 
