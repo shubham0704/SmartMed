@@ -164,6 +164,7 @@ class PatientDashboardHandler(RequestHandler):
                          print wdoc
                          validppl1.append(wdoc)
             prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(current_id)}})
+            print prescription
             self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,prescription=prescription,loggedIn = bool(self.get_secure_cookie("user"))))
         else:
             self.redirect('/?loggedIn=False')
@@ -393,6 +394,7 @@ class PItobetold(RequestHandler):
         # the secureid and the user cookie must be same for the pi to run properly
 
         db=MotorClient().med
+        #s=ObjectId("57e42085f660382cb0b4dc51")
         result=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
         if bool(result):
             db=MotorClient().medOfPi
@@ -468,7 +470,8 @@ def minute_loop2():
 		nxt = sleep(60) # Start the clock.
 		#user=current_user # Run while the clock is ticking.
 		#print user
-		s=ObjectId('57a612faf66038127990ddb4')
+		#s=ObjectId('57a612faf66038127990ddb4')
+		s=ObjectId("57e42085f660382cb0b4dc51")
 		prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
 		userInfo=yield db.users.find_one({'_id':s})
 		#print userInfo
@@ -478,9 +481,12 @@ def minute_loop2():
 		print prescription['medicines'][0]['afternoon']
 		if bool(prescription['medicines'][0]['morning']) and t==morning:
 			#sendMessage(userInfo['contact'],'time for medicine')
+			pass
 		elif bool(prescription['medicines'][0]['afternoon']) and t==afternoon:
+			pass
 			#sendMessage(userInfo['contact'],'time for medicine')
 		elif bool(prescription['medicines'][0]['evening']) and t==evening:
+			pass
 			#sendMessage(userInfo['contact'],'time for medicine')
 			
 		yield nxt # Wait for the timer to run out.        
