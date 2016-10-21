@@ -1,7 +1,7 @@
 
 
 
-#include<Stepper.h>
+//#include<Stepper.h>
 #include<Servo.h>
 #include<LiquidCrystal.h>     
 #include<NewPing.h>
@@ -16,9 +16,9 @@ NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and
 const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
 // for your motor
 
-LiquidCrystal lcd(12, 14, 5, 4, 3, 2);
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 Servo myservo;  // create servo object to control a servo
-Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
+//Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
 
 int val;    // variable to read the value from the analog pin
 
@@ -26,10 +26,10 @@ int val;    // variable to read the value from the analog pin
 void setup() {
  
     //Servo setup
-      myservo.attach(13);  // attaches the servo on pin 9 to the servo object
+      myservo.attach(9);  // attaches the servo on pin 9 to the servo object
 
     //Stepper Setup
-      myStepper.setSpeed(60);
+    //  myStepper.setSpeed(60);
 
     //LCD setup
      lcd.begin(20, 4);
@@ -37,23 +37,24 @@ void setup() {
     pinMode(53,OUTPUT);
     //INTIALISE INPUT PINS FROM RPI
     pinMode(22,INPUT);
-    pinMode(23,INPUT);
-    pinMode(24,INPUT);
-    pinMode(25,INPUT);
-    pinMode(52,OUTPUT);
+  //  pinMode(23,INPUT);
+   // pinMode(24,INPUT);
+    //pinMode(25,INPUT);
+    //pinMode(52,OUTPUT);
     //ultrasound setup
     Serial.begin(9600); // Open serial monitor at 115200 baud to see ping results.
 
 }
 
 void loop() {
-  if(digitalRead(22)==0){
+  if(digitalRead(22)==1){
     //buzzer code
-    digitalWrite(53,HIGH);
-    delay(3000);
-    digitalWrite(53,LOW);
+    //digitalWrite(53,HIGH);
+    //delay(3000);
+    //digitalWrite(53,LOW);
     
     //LCD code
+    Serial.println("lcd code");
     lcd.setCursor(0, 1);
     lcd.print("Namaste! Medicine time!");
     lcd.setCursor(0, 2);
@@ -61,10 +62,10 @@ void loop() {
 
     //stepper
     for(int i=0;i<10;i++){
-      myStepper.step(100);
+//      myStepper.step(100);
       delay(50);
  }
-  myStepper.setSpeed(0);
+//  myStepper.setSpeed(0);
   
 //ultrasound Sensor
   while(1){                    // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
