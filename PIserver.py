@@ -35,7 +35,7 @@ import logging
 morning=8
 afternoon=16
 evening=20
-db=MotorClient().med
+db=MotorClient("mongodb://med:med@ds048719.mlab.com:48719/md")["md"]
 class IndexHandler(RequestHandler):
     @removeslash
     @coroutine
@@ -466,31 +466,31 @@ class checkTime(BaseHandler):
         """
 @coroutine
 def minute_loop2():
-	while True:
-		nxt = sleep(60) # Start the clock.
-		#user=current_user # Run while the clock is ticking.
-		#print user
-		#s=ObjectId('57a612faf66038127990ddb4')
-		s=ObjectId("57e42085f660382cb0b4dc51")
-		prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
-		userInfo=yield db.users.find_one({'_id':s})
-		#print userInfo
-		#print prescription
-		t=datetime.now().hour
-		print t
-		print prescription['medicines'][0]['afternoon']
-		if bool(prescription['medicines'][0]['morning']) and t==morning:
-			#sendMessage(userInfo['contact'],'time for medicine')
-			pass
-		elif bool(prescription['medicines'][0]['afternoon']) and t==afternoon:
-			pass
-			#sendMessage(userInfo['contact'],'time for medicine')
-		elif bool(prescription['medicines'][0]['evening']) and t==evening:
-			pass
-			#sendMessage(userInfo['contact'],'time for medicine')
-			
-		yield nxt # Wait for the timer to run out.        
-	
+    while True:
+        nxt = sleep(60) # Start the clock.
+        #user=current_user # Run while the clock is ticking.
+        #print user
+        #s=ObjectId('57a612faf66038127990ddb4')
+        s=ObjectId("57e42085f660382cb0b4dc51")
+        prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+        userInfo=yield db.users.find_one({'_id':s})
+        #print userInfo
+        #print prescription
+        t=datetime.now().hour
+        print t
+        print prescription['medicines'][0]['afternoon']
+        if bool(prescription['medicines'][0]['morning']) and t==morning:
+            #sendMessage(userInfo['contact'],'time for medicine')
+            pass
+        elif bool(prescription['medicines'][0]['afternoon']) and t==afternoon:
+            pass
+            #sendMessage(userInfo['contact'],'time for medicine')
+        elif bool(prescription['medicines'][0]['evening']) and t==evening:
+            pass
+            #sendMessage(userInfo['contact'],'time for medicine')
+            
+        yield nxt # Wait for the timer to run out.        
+    
 settings = dict(
         template_path = os.path.join(os.path.dirname(__file__), "templates"),
         static_path = os.path.join(os.path.dirname(__file__), "static"),
