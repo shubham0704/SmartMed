@@ -464,6 +464,7 @@ class checkTime(BaseHandler):
              print 'still checking'
 
         """
+'''
 @coroutine
 def minute_loop2():
     while True:
@@ -490,7 +491,7 @@ def minute_loop2():
             #sendMessage(userInfo['contact'],'time for medicine')
             
         yield nxt # Wait for the timer to run out.        
-    
+'''    
 settings = dict(
         template_path = os.path.join(os.path.dirname(__file__), "templates"),
         static_path = os.path.join(os.path.dirname(__file__), "static"),
@@ -521,7 +522,7 @@ if __name__ == "__main__":
     #IOLoop.instance().stop()
     main_loop=IOLoop.instance()
     #PeriodicCallback(checkTime.checkTimeAndSay,500,main_loop).start()
-    IOLoop.current().spawn_callback(minute_loop2)
+    #IOLoop.current().spawn_callback(minute_loop2)
     IOLoop.current().start()
     
     

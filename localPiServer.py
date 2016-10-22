@@ -4,7 +4,7 @@ from tornado.escape import json_encode
 from tornado.web import RequestHandler, Application, asynchronous, removeslash
 from tornado.httpserver import HTTPServer
 from tornado.httpclient import AsyncHTTPClient
-from tornado.gen import engine, Task, coroutine
+from tornado.gen import engine, Task, coroutine,sleep
 
 #Other Libraries
 import urllib
@@ -28,78 +28,136 @@ from fuzzywuzzy import process
 from PIL import Image
 import logging
 import RPi.GPIO as GPIO
-db=MotorClient().medOfPi
 #set time values of morning,afternoon,evening
 #format hr,min
+'''
 morning=(8,30)
 afternoon=(1,30)
 evening=(8,0)
+'''
 GPIO.setboard(GPIO.BOARD)
-GPIO.setup(10,GPIO.OUT)
-GPIO.output(10,False)
-class PItobetold(RequestHandler):
-	@coroutine
-	@removeslash
-	def get(self):
-		#pi can access the server from internet if its connected to net download data and store in his own db
-		#s=secureid #this is used to configure pi
-		# the secureid and the user cookie must be same for the pi to run properly
-		s='57a8a71bf6603810dea8c957'
-		db=MotorClient().med
-		result=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
-		if bool(result):
-			db=MotorClient().medOfPi
-			resultLocal=db.prescriptions.find()
-			if bool(resultLocal) and resultLocal!=result:
-			    db.prescriptions.remove({})
-			yield db.prescriptions.insert(result)
-			now=datetime.now()
-			time=now.strftime("%d-%m-%Y %I:%M %p")
-			yield db.prescriptions.findOneAndUpdate({'$set':{'startTime':time}})
-		else:
-			self.write("NO prescription written yet")
-		self.redirect('/commandPi')
+GPIO.setup(18,GPIO.OUT)
+GPIO.output(18,False)
+
+morning=8
+afternoon=16
+evening=20
+
+#db=MotorClient().localPi
+'''
 class CommandPi(RequestHandler):
-	def get(self):
-		result=db.prescriptions.find_one()
-		
-		
-		
+    def get(self):
+        self.render('index.html')
+'''
+try:
+    db=MotorClient("mongodb://med:med@ds048719.mlab.com:48719/md")["md"]
+except:
+    db=MotorClient().localPi
+@coroutine
+def checkUpdate():
+    #pi can access the server from internet if its connected to net download data and store in his own db
+    #s=secureid #this is used to configure pi
+    # the secureid and the user cookie must be same for the pi to run properly
+    print("inside checkUpdate")
+    db=MotorClient().localPi
+    s=ObjectId("57e42085f660382cb0b4dc51")
+    result=yield db.prescriptions.find_one({'aliases':{'toid':s}})
+    if bool(result):
+        print result
+    try:
+        db2=MotorClient("mongodb://med:med@ds048719.mlab.com:48719/md")["md"]
+        resultOnline=yield db2.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+        x=yield db2.prescriptions.find_one()
+        print x
+        print 'hkjsdhlf'
+        print resultOnline
+        if bool(resultOnline):
+            print resultOnline
+        #if bool(resultOnline) and resultOnline!=result:
+            #db.prescriptions.remove({})
+            #yield db.prescriptions.insert(result)
+            #now=datetime.now()
+            #time=now.strftime("%d-%m-%Y %I:%M %p")
+            #yield db.prescriptions.findOneAndUpdate({'$set':{'startTime':time}})
+        else:
+            print("up to date")
+    except:
+        pass
+    print 'outside it'   
+    
+@coroutine
+def minute_loop2():
+    db=MotorClient("mongodb://med:med@ds048719.mlab.com:48719/md")["md"]
+    while True:
+        nxt = sleep(60) # Start the clock.
+        s=ObjectId("57e42085f660382cb0b4dc51")
+        prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+        t=datetime.now().hour
+        print t
+        try:
+            print prescription['medicines'][0]['afternoon']
+        except:
+            try:
+                db=MotorClient("mongodb://med:med@ds048719.mlab.com:48719/md")["md"]
+                prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(s)}})
+            except:
+                pass    
+                
+        if bool(prescription['medicines'][0]['morning']) and t==morning:
+			sendMessage(userInfo['contact'],'time for medicine')
+			GPIO.output(18,True)
+            pass
+        elif bool(prescription['medicines'][0]['afternoon']) and t==afternoon:
+            pass
+			sendMessage(userInfo['contact'],'time for medicine')
+			GPIO.output(18,True)
+        elif bool(prescription['medicines'][0]['evening']) and t==evening:
+            pass
+            sendMessage(userInfo['contact'],'time for medicine')
+            GPIO.output(18,True)
+        yield nxt # Wait for the timer to run out.      
+#to be implemented later        
+'''     
 class LedWs(WebSocketHandler):
-		
+        
 
-	def get_compression_options(self):
+    def get_compression_options(self):
         # Non-None enables compression with default options.
-		return {}
+        return {}
 
-	def open(self):
-		print "Connection open"
-		self.write_message("Connection opened right now !")
-		
-	def on_close(self):
-		logging.info("Connection closed from server side")
-	def on_message(self,message):
-		print "Message Recieved: {}".format(message)
-		if (bool(int(message))):
-			GPIO.output(int(message),True)
-			self.write_message("Your Message: {}".format(message))
-			
+    def open(self):
+        print "Connection open"
+        self.write_message("Connection opened right now !")
+        
+    def on_close(self):
+        logging.info("Connection closed from server side")
+    def on_message(self,message):
+        print "Message Recieved: {}".format(message)
+        if (bool(int(message))):
+            GPIO.output(int(message),True)
+            self.write_message("Your Message: {}".format(message))
+            
+'''
 
-		
-		
+                
+'''        
 settings = dict(
-		template_path = os.path.join(os.path.dirname(__file__), "templates"),
-		static_path = os.path.join(os.path.dirname(__file__), "static"),
-		debug=True)
+        template_path = os.path.join(os.path.dirname(__file__), "templates"),
+        static_path = os.path.join(os.path.dirname(__file__), "static"),
+        debug=True)
 
 application=Application([
-(r"/", IndexHandler),
-(r"/echo",LedWs)
+(r"/",CommandPi)
 ],**settings)
-
+'''
 if __name__ == "__main__":
-	server = HTTPServer(application)
-	server.listen(os.environ.get("PORT", 8000))
-	IOLoop.current().start()
-		
-		
+    #server = HTTPServer(application)
+    #server.listen(os.environ.get("PORT", 8000))
+    #IOLoop.current().start()
+    main_loop=IOLoop.instance()
+    #PeriodicCallback(checkTime.checkTimeAndSay,500,main_loop).start()
+    IOLoop.current().run_sync(checkUpdate)
+    IOLoop.current().spawn_callback(minute_loop2)
+    
+    IOLoop.current().start()    
+        
