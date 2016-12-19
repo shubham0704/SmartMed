@@ -32,6 +32,9 @@ import logging
 #GPIO.setboard(GPIO.BOARD)
 #GPIO.setup(10,GPIO.OUT)
 #GPIO.output(10,False)
+__UPLOADS__='/static/uploads'
+
+
 morning=8
 afternoon=16
 evening=20
@@ -65,7 +68,7 @@ class SignupHandler(RequestHandler):
             password=hashlib.sha256(password).hexdigest()
             now=datetime.now()
             time=now.strftime("%d-%m-%Y %I:%M %p")
-            result = yield db.users.insert({'photo_link' : '','username' : username, 'password' : password, 'email' : email, 'name' : name,'services' : [],'contact':contact,
+            result = yield db.users.insert({'photo_link' : '../static/uploads/default.png','username' : username, 'password' : password, 'email' : email, 'name' : name,'services' : [],'contact':contact,
                                             'desig':desig,'signup' : 0,'social_accounts' : {}, 'joined_on' : time})
             self.set_secure_cookie('user',str(result))
             message = 'Hey ' + name + ', Welcome to AutoMed!'
@@ -116,13 +119,13 @@ class DoctorDashboardHandler(RequestHandler):
         if bool(self.get_secure_cookie('user')):
             current_id = self.get_secure_cookie('user')
             userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
-            print userInfo
+            #print userInfo
             validmsg=db.serviceRequests.find({'aliases':{'toid':ObjectId(current_id)},'Service.0.accepted':1})
             if validmsg:
              while (yield validmsg.fetch_next):
                          wdoc = validmsg.next_object()
-                         print '\nrecieved requests'
-                         print wdoc
+                         #print '\nrecieved requests'
+                         #print wdoc
                          validppl.append(wdoc)
             #validmsg=db.serviceRequests.find({'aliases.0.fromid':ObjectId(current_id),'Service.0.accepted':1})
             #if validmsg:
@@ -142,6 +145,8 @@ class PatientDashboardHandler(RequestHandler):
     @coroutine
     def get(self):
         userInfo=None
+        validppl=[]
+        validppl1=[]
         if bool(self.get_secure_cookie('user')):
             current_id = self.get_secure_cookie('user')
             print current_id
@@ -168,6 +173,23 @@ class PatientDashboardHandler(RequestHandler):
             self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,prescription=prescription,loggedIn = bool(self.get_secure_cookie("user"))))
         else:
             self.redirect('/?loggedIn=False')
+class PatientOnboardingHandler(RequestHandler):
+    @coroutine
+    @removeslash
+    def post(self):
+        fileinfo = self.request.files['filearg'][0]
+        fname = fileinfo['filename']
+        extn = os.path.splitext(fname)[1]
+        cname = str(uuid.uuid4()) + extn
+        fh = open(__UPLOADS__ + cname, 'wb')
+        fh.write(fileinfo['body'])
+        filelink=__UPLOADS__ + cname
+        current_id =self.get_secure_cookie('user')
+        yield db.users.update({'_id': ObjectId(current_id)}, {'$set': {'photo_link': filelink}})
+        self.redirect('/dashboard/patient')
+
+
+
 
 class ServiceRequestHandler(RequestHandler):
 
@@ -202,8 +224,9 @@ class ServiceRequestHandler(RequestHandler):
         time = now.strftime("%d-%m-%Y %I:%M %p")
         userInfo=yield db.users.find_one({'_id':ObjectId(s)})
         recvInfo=yield db.users.find_one({'username':recvUser})
+
         #srequest = yield db.serviceRequests.insert({'From' : s, 'To' : recvUser, 'Service' : {'service' : service, 'cost' : cost,'accepted':0}})
-        srequest = yield db.serviceRequests.insert({'aliases':[{'fromid':s},{'toid':ObjectId(recvInfo['_id'])}],'Service':[{"accepted":0},{'service':service},{"sentby":userInfo["username"]},{"recievedby":recvInfo["username"]},{"time":time}]})
+        srequest = yield db.serviceRequests.insert({'aliases':[{'fromid':s},{'toid':ObjectId(recvInfo['_id'])}],'Service':[{"accepted":0},{'service':service},{"sentby":userInfo["username"]},{"recievedby":recvInfo["username"]},{"time":time}],'photo_link':userInfo["photo_link"]})
         if bool(srequest):
             self.redirect('/?sendrequest=True')
         else:
@@ -280,7 +303,7 @@ class PatientProfileHandler(RequestHandler):
             result=db.serviceRequests.find({'aliases':{'fromid':ObjectId(obId),'toid':s},'Service.0.accepted':1})
             if(bool(result)):
                 patInfo=yield db.users.find_one({'_id':ObjectId(obId)})
-                print patInfo
+                #print patInfo
                 self.render('patient.html',patInfo=patInfo)         
 
 

@@ -104,15 +104,13 @@ def minute_loop2():
                 pass    
                 
         if bool(prescription['medicines'][0]['morning']) and t==morning:
-			sendMessage(userInfo['contact'],'time for medicine')
-			GPIO.output(18,True)
-            pass
+            sendMessage(userInfo['contact'],'time for medicine')
+            GPIO.output(18,True)
+            
         elif bool(prescription['medicines'][0]['afternoon']) and t==afternoon:
-            pass
-			sendMessage(userInfo['contact'],'time for medicine')
-			GPIO.output(18,True)
+            sendMessage(userInfo['contact'],'time for medicine')
+            GPIO.output(18,True)
         elif bool(prescription['medicines'][0]['evening']) and t==evening:
-            pass
             sendMessage(userInfo['contact'],'time for medicine')
             GPIO.output(18,True)
         yield nxt # Wait for the timer to run out.      

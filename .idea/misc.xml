@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
@@ -10,4 +11,7 @@
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
+=======
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.12 (C:\Python27\python.exe)" project-jdk-type="Python SDK" />
+>>>>>>> 1bf812fbe6e5ab3323ed9d339f1b8bd4f180cd20
 </project>

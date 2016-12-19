@@ -34,7 +34,7 @@
 				<div class="row">
 					<div class="col m4">
 						<div class="card"> 
-							<div class="card-image"><img src="../static/images/sb.jpg"><div class="card-title custom-card-title"><i class="fa fa-stethoscope"></i> {{ result['userInfo']['username'] }}</div></div>
+							<div class="card-image"><img src={{ result['userInfo']['photo_link'] }}><div class="card-title custom-card-title"><i class="fa fa-stethoscope"></i> {{ result['userInfo']['username'] }}</div></div>
 
                             <div class="card-content">
 								<i class="fa fa-certificate"></i> <u><b>Certifications</b></u><br>
@@ -60,7 +60,7 @@
                                     {% else %}
                                     {% for  user in validppl%}
                                     <li class="collection-item avatar">
-								 		<img src="../static/images/17.jpg" alt="" class="circle">
+								 		<img src={{ user['photo_link'] }} alt="" class="circle">
 								 		<!--<span class="title">Shaan Rahman</span>
 								 		<p>Diagnosed with Common Flu<br>
 								 			Suggested Dolo 650
@@ -69,14 +69,6 @@
 								 		<a href="/patient?obId={{user['aliases'][0]['fromid']}}" class="secondary-content"><i class="mdi-action-grade"></i>Click to View patient</a>
 								 	</li>
                                     {%end%}
-								 	<li class="collection-item avatar">
-								 		<img src="../static/images/18.jpg" alt="" class="circle">
-								 		<span class="title">Himani Sharma</span>
-								 		<p>Diagnosed with Migraine<br>
-								 			Suggested Citrogen
-								 		</p>
-								 		<a href="patient.html" class="secondary-content"><i class="mdi-action-grade"></i>Click to view Patient</a>
-								 	</li>
                                     {% end %}
 								 </ul> 
 							</div>
