@@ -47,14 +47,23 @@ class IndexHandler(RequestHandler):
 
 class SignupHandler(RequestHandler):
 
+    def get(self):
+        designation= self.get_argument('desig')
+        if designation=='doctor':
+            self.render('onboarding_doctor.html')
+        elif designation=='patient':
+            self.render("onboarding_patient.html")
+        else:
+            self.redirect('/?tamper=True')
     @removeslash
     @coroutine
     def post(self):
-        username = self.get_argument('username_signup')
-        password = self.get_argument('password_signup')
-        name = self.get_argument('name')
+        username = self.get_argument('username')
+        password = self.get_argument('password')
+        fname = self.get_argument('first_name')
+        lname=self.get_argument('last_name')
         desig=self.get_argument('designation')
-        email = self.get_argument('emailID')
+        email = self.get_argument('email')
         contact=self.get_argument('contact')
         if not(bool(username) and bool(password) and bool(name) and bool(re.search(r".+@\w+\.(com|co\.in)",email))):
             self.redirect('/?username&email=empty')

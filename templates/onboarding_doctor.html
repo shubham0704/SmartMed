@@ -11,6 +11,51 @@
 
     <!-- <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet"> -->
     <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="../static/css/croppie.css">
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/bower_components/materialize/dist/js/materialize.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('.modal-trigger').leanModal();
+        });
+
+    </script>
+        <script type="text/javascript">
+        window.onload = function() {
+            var options =
+            {
+                imageBox: '.imageBox',
+                thumbBox: '.thumbBox',
+                spinner: '.spinner',
+                imgSrc: 'avatar.png'
+            }
+            var cropper;
+            document.querySelector('#file').addEventListener('change', function(){
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    options.imgSrc = e.target.result;
+                    cropper = new cropbox(options);
+                }
+                reader.readAsDataURL(this.files[0]);
+                this.files = [];
+            })
+            document.querySelector('#btnCrop').addEventListener('click', function(){
+                var img = cropper.getDataURL()
+                // document.querySelector('.imageBox').innerHTML = '<img src="'+img+'">';
+                $(".imageBox").replaceWith('<img src="'+img+'"><input type="hidden" name="profile_photo" value="'+img+'">');
+            })
+            document.querySelector('#btnZoomIn').addEventListener('click', function(){
+                cropper.zoomIn();
+            })
+            document.querySelector('#btnZoomOut').addEventListener('click', function(){
+                cropper.zoomOut();
+            })
+        };
+    </script>
+
+    <link rel="stylesheet" href="../static/css/onboarding_patient.css">
 </head>
 
 <body>
@@ -18,7 +63,7 @@
     <div class="container">
         <div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo"><i class="fa fa-heartbeat"></i></a>
             <ul class="right">
-                <li><b>Welcome, Doc!</b></li>
+                <li><b>Hey, Doc!</b></li>
             </ul>
             <ul id="nav-mobile" class="side-nav">
                 <li><a href="#">Contact</a></li>
@@ -31,16 +76,74 @@
 <br><br><br>
 
 
+<div class="container">
+    <div class="row">
+        <form class="col s12">
+            The Profile Picture should be uploaded here.
+            <div class="onboarding-image-holder row col s6">
+                <script src="../static/js/cropbox.js"></script>
+                <div class="container1 col s12">
+                    <div class="imageBox">
+                        <div class="thumbBox"></div>
+                        <div class="spinner" style="display: none">Loading...</div>
+                    </div>
+                    <div class="action">
+                        <input type="file" id="file" name="photo" style="" class="white black-text col s12">
+                        <input class="btn blue col s12" type="button" id="btnCrop" value="Crop" style="float: left">
+                        <input class="btn blue col s5" type="button" id="btnZoomIn" value="+" style="float: left">
+                        <input class="btn blue col s5 push-s2" type="button" id="btnZoomOut" value=" - " style="float: left">
+                    </div>
+                </div>
+                </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="first_name" type="text" class="validate">
+                    <label for="first_name">First Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="last_name" type="text" class="validate">
+                    <label for="last_name">Last Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="username" type="text" class="validate">
+                    <label for="username">Username</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="password" type="password" class="validate">
+                    <label for="password">Password</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="repeat_password" type="password" class="validate">
+                    <label for="repeat_password">Repeat Password</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="email" type="email" class="validate">
+                    <label for="email">Email</label>
+                </div>
+            </div>
+             <div class="row">
+                <div class="input-field col s12">
+                    <input id="contact" name="contact" type="text">
+                    <label for="contact">Contact</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="submit" class="btn col s12 orange">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-<!--Import jQuery before materialize.js-->
-<script type="text/javascript" src="../static/bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="../static/bower_components/materialize/dist/js/materialize.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-        $('.modal-trigger').leanModal();
-    });
 
-</script>
 </body>
 </html>
