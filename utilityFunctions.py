@@ -72,3 +72,13 @@ def sendMessage(number,message):
     postdata = urllib.urlencode(values)                 # URL encoding the data here.
     req = urllib2.Request(url, postdata)
     response = urllib2.urlopen(req)
+def EditImage():
+    fileinfo = self.request.files['filearg'][0]
+    fname = fileinfo['filename']
+    extn = os.path.splitext(fname)[1]
+    cname = str(uuid.uuid4()) + extn
+    fh = open(__UPLOADS__ + cname, 'wb')
+    fh.write(fileinfo['body'])
+    filelink = __UPLOADS__ + cname
+    current_id = self.get_secure_cookie('user')
+    yield db.users.update({'_id': ObjectId(current_id)}, {'$set': {'photo_link': filelink}})

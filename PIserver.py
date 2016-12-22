@@ -32,7 +32,7 @@ import logging
 #GPIO.setboard(GPIO.BOARD)
 #GPIO.setup(10,GPIO.OUT)
 #GPIO.output(10,False)
-__UPLOADS__='/static/uploads'
+__UPLOADS__='static/uploads/'
 
 
 morning=8
@@ -55,6 +55,7 @@ class SignupHandler(RequestHandler):
             self.render("onboarding_patient.html")
         else:
             self.redirect('/?tamper=True')
+"""
     @removeslash
     @coroutine
     def post(self):
@@ -87,7 +88,7 @@ class SignupHandler(RequestHandler):
                 self.redirect('/dashboard/doctor')
             else:
                 self.redirect('/dashboard/patient')
-
+"""
 class LoginHandler(RequestHandler):
 
     @removeslash
@@ -158,9 +159,9 @@ class PatientDashboardHandler(RequestHandler):
         validppl1=[]
         if bool(self.get_secure_cookie('user')):
             current_id = self.get_secure_cookie('user')
-            print current_id
+            #print current_id
             userInfo = yield db.users.find_one({'_id':ObjectId(current_id)})
-            print userInfo
+            #print userInfo
 
             validmsg=db.serviceRequests.find({'aliases':{'toid':ObjectId(current_id)},'Service.0.accepted':1})
             if validmsg:
@@ -178,7 +179,7 @@ class PatientDashboardHandler(RequestHandler):
                          print wdoc
                          validppl1.append(wdoc)
             prescription=yield db.prescriptions.find_one({'aliases':{'toid':ObjectId(current_id)}})
-            print prescription
+            #print prescription
             self.render('PatientDashboard.html',result = dict(name='AutoMed',userInfo=userInfo,prescription=prescription,loggedIn = bool(self.get_secure_cookie("user"))))
         else:
             self.redirect('/?loggedIn=False')
@@ -186,18 +187,87 @@ class PatientOnboardingHandler(RequestHandler):
     @coroutine
     @removeslash
     def post(self):
-        fileinfo = self.request.files['filearg'][0]
-        fname = fileinfo['filename']
-        extn = os.path.splitext(fname)[1]
-        cname = str(uuid.uuid4()) + extn
-        fh = open(__UPLOADS__ + cname, 'wb')
-        fh.write(fileinfo['body'])
-        filelink=__UPLOADS__ + cname
-        current_id =self.get_secure_cookie('user')
-        yield db.users.update({'_id': ObjectId(current_id)}, {'$set': {'photo_link': filelink}})
+        if 'photo' in self.request.files:
+
+            fileinfo = self.request.files['photo'][0]
+            filename = fileinfo['filename']
+            extn = os.path.splitext(filename)[1]
+            cname = str(uuid.uuid4()) + extn
+            fh = open(__UPLOADS__ + cname, 'wb')
+            fh.write(fileinfo['body'])
+            photo_link=__UPLOADS__ + cname
+        else:
+            photo_link = '../static/uploads/default.png'
+        username = self.get_argument('username')
+        password = self.get_argument('password')
+        fname = self.get_argument('first_name')
+        lname = self.get_argument('last_name')
+        email = self.get_argument('email')
+        contact = self.get_argument('contact')
+        if not (bool(username) and bool(password) and bool(fname) and bool(re.search(r".+@\w+\.(com|co\.in)", email))):
+            self.redirect('/?username&email=empty')
+            return
+        result = yield db.users.find_one({'username': username, 'email': email, 'desig': 'patient'})
+        if (bool(result)):
+            self.redirect('/?username&email=taken')
+        else:
+            password = hashingPassword(password)
+            password = hashlib.sha256(password).hexdigest()
+            now = datetime.now()
+            time = now.strftime("%d-%m-%Y %I:%M %p")
+            result = yield db.users.insert(
+                {'photo_link':'../'+ photo_link, 'username': username, 'password': password,
+                 'email': email, 'name': fname+' '+lname, 'services': [], 'contact': contact,
+                 'desig': 'patient', 'signup': 0, 'social_accounts': {}, 'joined_on': time})
+            self.set_secure_cookie('user', str(result))
+            message = 'Hey ' + fname + ', Welcome to AutoMed!'
+            # message = 'Hey' + name + ', Welcome to AutoMed!'
+            sendMessage(contact, message)
         self.redirect('/dashboard/patient')
 
+class DoctorOnboardingHandler(RequestHandler):
+   @coroutine
+   @removeslash
+   def post(self):
+        if 'photo' in self.request.files:
 
+           fileinfo = self.request.files['photo'][0]
+           filename = fileinfo['filename']
+           extn = os.path.splitext(filename)[1]
+           cname = str(uuid.uuid4()) + extn
+           fh = open(__UPLOADS__ + cname, 'wb')
+           fh.write(fileinfo['body'])
+           photo_link = __UPLOADS__ + cname
+        else:
+            photo_link = '../static/uploads/default.png'
+        username = self.get_argument('username')
+        password = self.get_argument('password')
+        fname = self.get_argument('first_name')
+        lname = self.get_argument('last_name')
+        #desig = self.get_argument('designation')
+        email = self.get_argument('email')
+        contact = self.get_argument('contact')
+        if not (bool(username) and bool(password) and bool(fname) and bool(re.search(r".+@\w+\.(com|co\.in)", email))):
+            self.redirect('/?username&email=empty')
+            #return
+        #desig = desig.lower()
+        result = yield db.users.find_one({'username': username, 'email': email, 'desig': 'doctor'})
+        if (bool(result)):
+           self.redirect('/?username&email=taken')
+        else:
+             password = hashingPassword(password)
+             password = hashlib.sha256(password).hexdigest()
+             now = datetime.now()
+             time = now.strftime("%d-%m-%Y %I:%M %p")
+             result = yield db.users.insert(
+                {'photo_link': '../'+ photo_link, 'username': username, 'password': password,
+                 'email': email, 'name': fname+' '+lname, 'services': [], 'contact': contact,
+                 'desig': 'doctor', 'signup': 0, 'social_accounts': {}, 'joined_on': time})
+             self.set_secure_cookie('user', str(result))
+             message = 'Hey ' + fname + ', Welcome to AutoMed!'
+            # message = 'Hey' + name + ', Welcome to AutoMed!'
+             sendMessage(contact, message)
+        self.redirect('/dashboard/doctor')
 
 
 class ServiceRequestHandler(RequestHandler):
@@ -534,6 +604,8 @@ settings = dict(
 application=Application([
 (r"/", IndexHandler),
 (r"/signup",SignupHandler),
+(r"/onboarding/doctor",DoctorOnboardingHandler),
+(r"/onboarding/patient",PatientOnboardingHandler),
 (r"/login",LoginHandler),
 (r"/profile/(\w+)",UserProfileHandler),
 (r"/dashboard/patient", PatientDashboardHandler),
