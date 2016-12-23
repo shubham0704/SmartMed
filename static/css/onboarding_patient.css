@@ -71,3 +71,7 @@ margin-left: 0px;
 input{
   border:0;
 }
+
+.file-input-wrapper{
+  background: #000;
+}
