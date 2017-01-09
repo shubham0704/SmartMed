@@ -40,7 +40,7 @@
                  <input type="text" class=" search " name="query" placeholder="Search for doctors">
             </form>
             </div>
-        </div>       
+        </div>
 		<div class="table">
 
 		<div class="row">
@@ -49,31 +49,31 @@
                 <div class="card-title">Manual Control</div>
         			<div id="messages"></div>
         		<div class="row col s12">
-                
+
                     <div class="col s2"><input  class="btn col s12" type="button" value="pin1" name="PIN1" onclick="tellServer('1')"></div>
                     <div class="col s2"><input class="btn col s12" type="button" value="pin2" name="PIN2" onclick="tellServer('2')"></div>
-                
-                
+
+
                     <div class="col s2"><input class="btn col s12" type="button" value="pin3" name="PIN3" onclick="tellServer('3')"></div>
                     <div class="col s2"><input class="btn col s12" type="button" value="pin4" name="PIN4" onclick="tellServer('4')"></div>
-                
-                
+
+
                     <div class="col s2"><input type="button" class="btn col s12" value="pin5" name="PIN5" onclick="tellServer('5')"></div>
                     <div class="col s2"><input type="button" class="btn col s12" value="pin6"name="PIN6" onclick="tellServer('6')"></div>
-                
-                
+
+
                     <div class="col s2"><input type="button" class="btn col s12" value="pin7" name="PIN7" onclick="tellServer('7')"></div>
                     <div class="col s2"><input type="button" class="btn col s12" value="pin8" name="PIN8" onclick="tellServer('8')"></div>
-                
-                
+
+
                     <div class="col s2"><input type="button" class="btn col s12" value="pin9" name="PIN9" onclick="tellServer('9')"></div>
                     <div class="col s2"><input type="button" class="btn col s12" value="pin10" name="PIN10" onclick="tellServer('10')"></div>
-                
-                
+
+
                     <div class="col s2"><input type="button" class="btn col s12" value="pin11" name="PIN11" onclick="tellServer('11')"></div>
                     <div class="col s2"><input type="button" class="btn col s12" value="pin12" name="PIN12" onclick="tellServer('12')"></div>
-                
-                
+
+
                     <div class="col s2"><input type="button" class="btn col s12" value="pin13" name="PIN13" onclick="tellServer('13')"></div>
                     <div class="col s2"><input type="button" class="btn col s12" value="pin14" name="PIN14" onclick="tellServer('14')"></div>
                 </div>
@@ -87,31 +87,31 @@
                     {% if result['prescription']%}
                     {% for medicine in result['prescription']['medicines'] %}
                     <div class="row">
-                    
+
                     <div class="col s12">
                     {{medicine['mn'] }}
                     </div>
                     <div class="col s12">
                     Daycount:{{medicine['daycount'] }}
                     </div>
-                   
+
                     <div class="row">
-                   
+
                      <div class="col s4">
 						 Morning: {{medicine['morning'] }}
-                    
+
                      </div>
                      <div class="col s4">
                          Afternoon: {{medicine['afternoon'] }}
                      </div>
                      <div class="col s4">
-                         Evening:  {{medicine['evening'] }} 
+                         Evening:  {{medicine['evening'] }}
                      </div>
                     </div>
                     {%end%}
-                    {%end%}	
+                    {%end%}
                     </div>
-                    </div>      
+                    </div>
                 </div>
 		</div>
 		</div>
@@ -119,7 +119,7 @@
         <div class="col s8 push-s2 card">
             <div class="card-content">
                 <h4>Graph here</h4>
-                <canvas id="medicineChart" width="100%" height="100%"></canvas> 
+                <canvas id="medicineChart" width="100%" height="100%"></canvas>
                 <script type="text/javascript">
                     var ctx=document.getElementById('medicineChart');
                     var myChart = new Chart(ctx, {
@@ -131,13 +131,20 @@
                 x: -10,
                 y: 0
             }, {
+              x:-8,
+              y:2
+            },{
+              x:-4,
+              y:1
+            },{
                 x: 0,
                 y: 10
             }, {
                 x: 10,
                 y: 5
             }]
-        }]
+        },
+      ]
     },
     options: {
         scales: {
@@ -145,7 +152,7 @@
                 type: 'linear',
                 position: 'bottom'
             }]
-        }
+        },
     }
 });
                 </script>
