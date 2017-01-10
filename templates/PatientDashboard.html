@@ -85,6 +85,7 @@
                         Your Prescription
                     </div>
                     {% if result['prescription']%}
+                        {% try %}
                     {% for medicine in result['prescription']['medicines'] %}
                     <div class="row">
                     
@@ -109,7 +110,10 @@
                      </div>
                     </div>
                     {%end%}
-                    {%end%}	
+                        {% except %}
+                        {{"No prescriptions for now"}}
+                    {%end%}
+                    {%end%}
                     </div>
                     </div>      
                 </div>
@@ -127,6 +131,7 @@
     data: {
         datasets: [{
             label: 'Scatter Dataset',
+
             data: [{
                 x: -10,
                 y: 0
