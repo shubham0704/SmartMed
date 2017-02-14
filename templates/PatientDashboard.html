@@ -14,6 +14,7 @@
 
         <!-- <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet"> -->
         <title>Doctor Dashboard</title>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
 	</head>
 	<body id="body">
         <ul id="user_menu" class="dropdown-content">
@@ -23,7 +24,8 @@
             <div class="container">
                 <div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo"><i class="fa fa-heartbeat"></i></a>
                     <ul class="right">
-                        <li><a class="dropdown-button" href="#!" data-activates="user_menu"><b>Welcome, {{result['userInfo']['username']}}</b></a></li>
+                        <li><b>Welcome, {{result['userInfo']['username']}}</b></li>
+                        <li><a class="dropdown-button" href="#!" data-activates="user_menu">Settings</a></li>
                     </ul>
                     <ul id="nav-mobile" class="side-nav">
                         <li><a href="#">Contact</a></li>
@@ -86,6 +88,7 @@
                         Your Prescription
                     </div>
                     {% if result['prescription']%}
+                        {% try %}
                     {% for medicine in result['prescription']['medicines'] %}
                     <div class="row">
 
@@ -110,69 +113,89 @@
                      </div>
                     </div>
                     {%end%}
+                        {% except %}
+                        {{"No prescriptions for now"}}
                     {%end%}
+                    {%end%}
+
                     </div>
                     </div>
                 </div>
 		</div>
 		</div>
+        {% if result['prescription']%}
         <div class="row">
-        <div class="col s8 push-s2 card">
-            <div class="card-content">
-                <h4>Graph here</h4>
-                <canvas id="medicineChart" width="100%" height="100%"></canvas>
+        <div class="col s8 push-s2 card oneup">
+            <div class="card-content ">
+
+                <h4>Dosage Frequency Stats </h4>
+                <canvas id="medicineChart" width="100%" height="50%"></canvas>
                 <script type="text/javascript">
-                    var ctx=document.getElementById('medicineChart');
+
+                var func1=function(i,medData){
+                    var node=document.querySelector("#medicineChart");
+                    var copy = node.cloneNode(true);
+                    copy.id="medicineChart"+(i);
+                    node.parentNode.insertBefore(copy, node);
+                    var ctx=document.getElementById('medicineChart'+(i));
                     var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        datasets: [{
-            label: 'Scatter Dataset',
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: "rgba(75,192,192,0.4)",
-            borderColor: "rgba(75,192,192,1)",
-            borderCapStyle: 'butt',
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: 'miter',
-            pointBorderColor: "rgba(75,192,192,1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 10,
-            pointHitRadius: 15,
-            data: [{
-                x: -10,
-                y: 0
-            }, {
-              x:-8,
-              y:2
-            },{
-              x:-4,
-              y:1
-            },{
-                x: 0,
-                y: 10
-            }, {
-                x: 10,
-                y: 5
-            }]
-        }
-      ]
-    },
-    options: {
-        scales: {
-            xAxes: [{
-                type: 'linear',
-                position: 'bottom'
-            }]
-        },
-    }
-});
+                            type: 'line',
+                            data: {
+                                datasets: [{
+                                    label: 'Scatter Dataset',
+                                    fill: false,
+                                    lineTension: 0.1,
+                                    backgroundColor: "rgba(75,192,192,0.4)",
+                                    borderColor: "rgba(75,192,192,1)",
+                                    borderCapStyle: 'butt',
+                                    borderDash: [],
+                                    borderDashOffset: 0.0,
+                                    borderJoinStyle: 'miter',
+                                    pointBorderColor: "rgba(75,192,192,1)",
+                                    pointBackgroundColor: "#fff",
+                                    pointBorderWidth: 1,
+                                    pointHoverRadius: 5,
+                                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                                    pointHoverBorderWidth: 2,
+                                    pointRadius: 10,
+                                    pointHitRadius: 15,
+                                    data: [{
+                                        x: 1,
+                                        y: 1
+                                    }, {
+                                        x: 2,
+                                        y: 3
+                                    }, {
+                                        x: 3,
+                                        y: 4
+                                    }, {
+                                        x: 5,
+                                        y: 6
+                                    }, {
+                                        x: 8,
+                                        y: 2
+                                    }]
+                                }
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    xAxes: [{
+                                        type: 'linear',
+                                        position: 'bottom',
+                                        labelString:medData
+                                    }]
+                                },
+                            }
+                        });
+                    }
+                {% for step,medicine in enumerate(result['prescription']['medicines']) %}
+                    var medName=String({{medicine['mn']}});
+                    func1({{step}},medName);
+                {% end %}
+
+
                 </script>
 
 
@@ -180,7 +203,7 @@
         </div>
         </div>
 
-
+{%end%}
         <footer class="page-footer orange">
             <div class="container">
                 <div class="row">
